@@ -1,12 +1,11 @@
-import 'package:app_sport/HomePage.dart';
-import 'package:app_sport/Profile.dart';
-import 'package:app_sport/Workout.dart';
+import 'Profile.dart';
+import 'Workout.dart';
 import 'package:flutter/material.dart';
 
+import 'HomePage.dart';
+
 void main() {
-  runApp(
-      const MyApp()
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -70,7 +69,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
-
   final List<Widget> _pages = [
     Button1Page(),
     Button2Page(),
@@ -81,8 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -105,12 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: Image.network(
-                'https://storage.googleapis.com/codeless-dev.appspot.com/uploads%2Fimages%2Fns82maDPujTwEb3FbMMb%2Fcf341eb51cc593db7bd9035d2d3714ca.png',
-                //width: 38,
-                //height: 38,
-                //fit: BoxFit.contain,
-              ),
+              icon: Icon(Icons.person),
               onPressed: () {
                 // Переход на страницу "HomeScreen" через маршрут
                 //Navigator.pushNamed(context, '/page1');
@@ -118,29 +109,32 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.sports_gymnastics),
               onPressed: () {
                 // Переход на страницу "SearchScreen" через маршрут
                 _changePage(1);
               },
             ),
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.home),
               onPressed: () {
                 // Переход на страницу "SearchScreen" через маршрут
-                _changePage(2);              },
+                _changePage(2);
+              },
             ),
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.lunch_dining),
               onPressed: () {
                 // Переход на страницу "SearchScreen" через маршрут
-                _changePage(3);              },
+                _changePage(3);
+              },
             ),
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.list),
               onPressed: () {
                 // Переход на страницу "SearchScreen" через маршрут
-                _changePage(4);              },
+                _changePage(4);
+              },
             ),
             // Добавьте другие IconButton'ы по мере необходимости
           ],
@@ -170,8 +164,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 }
-
-
 
 class Button1Page extends StatelessWidget {
   @override
@@ -217,4 +209,3 @@ class Button5Page extends StatelessWidget {
     );
   }
 }
-
