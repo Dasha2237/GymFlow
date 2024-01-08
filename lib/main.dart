@@ -67,7 +67,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
+  int _currentIndex = 1;
 
   final List<Widget> _pages = [
     Button1Page(),
@@ -109,20 +109,21 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.sports_gymnastics),
+              icon: Icon(Icons.home),
               onPressed: () {
                 // Переход на страницу "SearchScreen" через маршрут
                 _changePage(1);
               },
             ),
             IconButton(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.sports_gymnastics),
               onPressed: () {
                 // Переход на страницу "SearchScreen" через маршрут
                 _changePage(2);
               },
             ),
-            IconButton(
+
+            /*IconButton(
               icon: Icon(Icons.lunch_dining),
               onPressed: () {
                 // Переход на страницу "SearchScreen" через маршрут
@@ -135,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Переход на страницу "SearchScreen" через маршрут
                 _changePage(4);
               },
-            ),
+            ),*/
             // Добавьте другие IconButton'ы по мере необходимости
           ],
         ),
@@ -149,10 +150,10 @@ class _MyHomePageState extends State<MyHomePage> {
       index: _currentIndex,
       children: [
         Profile(),
-        Workout(),
         HomePage(),
-        Button1Page(),
-        Button2Page(),
+        Workout(),
+        //Button1Page(),
+        //Button2Page(),
         // Добавьте другие страницы по мере необходимости
       ],
     );
