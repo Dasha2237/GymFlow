@@ -157,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Profile(),
         HomePage(),
         Workout(),
-        Button1Page(),
+        LoginPage(),
         Button2Page()
         //Button1Page(),
         //Button2Page(),

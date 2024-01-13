@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -71,8 +70,8 @@ class _ProfileState extends State<Profile> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.network(
-                                      'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2Fb1be28d46eda187a995279ac6451d1cdb3a7127fEllipse%2017.png?alt=media&token=8c730477-8152-4e71-8859-89bdcc53e1c4',
+                                    child: Image.asset(
+                                      'lib/assets/profile_picture.png',
                                       fit: BoxFit.cover,
                                     ))
                               ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -73,13 +74,13 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                      width: 50,
-                      height: 50,
-                      margin: EdgeInsets.only(right: 25),
-                      decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 85, 85, 85),
-                          shape: BoxShape.circle),
-                    ),
+                        width: 50,
+                        height: 50,
+                        margin: EdgeInsets.only(right: 10),
+                        child: Image.asset(
+                          'lib/assets/profile_picture.png',
+                          fit: BoxFit.cover,
+                        )),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -163,8 +164,8 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(width: 38),
                         Column(
                           children: [
-                            Image.network(
-                              'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2Fd5545000507e30212fd1fcc7fd924cefb1776700image%201.png?alt=media&token=86c6364f-22a2-4982-a615-0ffa36025d61',
+                            Image.asset(
+                              'lib/assets/sport_thing.png',
                               width: 57,
                               height: 57,
                               fit: BoxFit.cover,

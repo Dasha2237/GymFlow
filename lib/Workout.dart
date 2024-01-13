@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
 class Workout extends StatelessWidget {
   @override
@@ -26,8 +27,8 @@ class Workout extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: Image.network(
-                          'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2F7325b802209d1271e65bfebf0b0bf96d101e067bimage%205.png?alt=media&token=423e4f3f-283c-4aef-b5d8-f6b6aee85bd3',
+                        child: Image.asset(
+                          'lib/assets/workout1.png',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -140,8 +141,8 @@ class Workout extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: Image.network(
-                          'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2F86ebbb54cde6179737fed79eb22ea3e0f3189a96image%204.png?alt=media&token=6420b1e5-1ff0-4ba9-abd1-82e5de4a3730',
+                        child: Image.asset(
+                          'lib/assets/workout2.png',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -254,8 +255,8 @@ class Workout extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: Image.network(
-                          'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2F216d96dffa0ff13454c5ff1989d656dc1f617b47image%203.png?alt=media&token=fb0d0eba-4b45-45e4-aa0c-c10ae5ce73c2',
+                        child: Image.asset(
+                          'lib/assets/workout3.png',
                           fit: BoxFit.cover,
                         ),
                       ),
