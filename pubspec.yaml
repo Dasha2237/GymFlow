@@ -42,6 +42,8 @@ dependencies:
   syncfusion_flutter_charts: ^24.1.45+1
   chart_sparkline: ^1.0.14
   flutter_profile_picture: ^2.0.0
+  dob_input_field: ^2.0.0
+  image_input: ^0.0.2
 
 
 
