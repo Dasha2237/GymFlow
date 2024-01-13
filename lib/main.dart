@@ -1,15 +1,18 @@
+import 'Profile.dart';
+import 'Workout.dart';
 import 'package:flutter/material.dart';
-import 'HomePage.dart';
-import "Profile.dart";
-import "Workout.dart";
 import 'LoginPage.dart';
+import 'HomePage.dart';
+import 'dto/database_manager.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseManager.init();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

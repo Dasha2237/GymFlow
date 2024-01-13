@@ -44,6 +44,7 @@ dependencies:
   flutter_profile_picture: ^2.0.0
 
 
+  path_provider: ^2.0.5
 
 
 
@@ -79,7 +80,7 @@ flutter:
     - lib/assets/workout2.png
     - lib/assets/workout3.png
     - lib/assets/sport_thing.png
-    
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
