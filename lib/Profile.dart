@@ -1,11 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dto/database_manager.dart';
+import 'dto/profile_data.dart';
 
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    ProfileData? profileData = DatabaseManager.getProfileData();
+    if (profileData ==null){
+      profileData = ProfileData(
+        name: 'Name',
+        surname: 'Surname',
+        weight: 60,
+        height: 165,
+        imagePath: 'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2Fb1be28d46eda187a995279ac6451d1cdb3a7127fEllipse%2017.png?alt=media&token=8c730477-8152-4e71-8859-89bdcc53e1c4',
+        periodLength: 5,
+        cycleLength: 28,
+        aim: 'Lose weight',
+        workoutsPerWeek: 4,
+        birthDate: DateTime(2004,6,24),
+        goalWeight: 55,
+        lastPeriodDate: DateTime.now(),
+      );
+    }
+    double BMI = profileData.weight / (profileData.height * profileData.height / 10000);
+    //a field to store comment on your BMI
+    if (BMI < 18.5) {
+      //underweight
+    } else if (BMI >= 18.5 && BMI < 25) {
+      //normal weight
+    } else if (BMI >= 25 && BMI < 30) {
+      //overweight
+    } else if (BMI >= 30) {
+      //obesity
+    }
+
+    //a field to store color of Lose weight button
+    if (profileData.aim == 'Lose weight') {
+      Color loseWeightButton = Color.fromARGB(255, 255, 255, 255);
+    } else {
+      Color loseWeightButton = Color(0xFF7F7F7F);
+    }
+
 
     return SingleChildScrollView(
       child: Column(
@@ -62,7 +100,7 @@ class Profile extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  'Kaidarova Karina!',
+                                  profileData.name + ' ' + profileData.surname,
                                   style: GoogleFonts.getFont(
                                     'Merriweather Sans',
                                     color: Colors.black,
@@ -238,7 +276,7 @@ class Profile extends StatelessWidget {
                         Container(
                           margin: EdgeInsets.only(top: 25),
                           child: Text(
-                            '5 days',
+                            profileData.periodLength.toString() + ' days',
                             style: GoogleFonts.getFont(
                               'Inter',
                               color: Color.fromRGBO(107, 107, 107, 1),
@@ -267,7 +305,7 @@ class Profile extends StatelessWidget {
                         Container(
                           margin: EdgeInsets.only(top: 12),
                           child: Text(
-                            '30 days',
+                            profileData.cycleLength.toString() + ' days',
                             style: GoogleFonts.getFont(
                               'Inter',
                               color: Color.fromRGBO(107, 107, 107, 1),
@@ -326,7 +364,7 @@ class Profile extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '55,6kg',
+                          profileData.weight.toString() + ' kg',
                           style: GoogleFonts.getFont(
                             'Inter',
                             color: Colors.black,
@@ -414,7 +452,7 @@ class Profile extends StatelessWidget {
                       children: [
                         Container(
                           child: Text(
-                            '18.9',
+                            BMI.toStringAsFixed(1),
                             style: GoogleFonts.getFont(
                               'Inter',
                               color: Colors.white,
@@ -651,7 +689,7 @@ class Profile extends StatelessWidget {
                           ],
                         ),
                         Text(
-                          '4',
+                          profileData.workoutsPerWeek.toString(),
                           style: GoogleFonts.getFont(
                             'Inter',
                             color: const Color(0xFF6b6b6b),

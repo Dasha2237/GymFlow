@@ -3,13 +3,16 @@ import 'Workout.dart';
 import 'package:flutter/material.dart';
 
 import 'HomePage.dart';
+import 'dto/database_manager.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseManager.init();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -37,13 +40,13 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'Demo'),
-      routes: {
+      /*routes: {
         '/page1': (context) => Button1Page(),
         '/page2': (context) => Button2Page(),
         '/page3': (context) => Button3Page(),
         '/page4': (context) => Button4Page(),
         '/page5': (context) => Button5Page(),
-      },
+      },*/
     );
   }
 }
@@ -69,13 +72,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 1;
 
-  final List<Widget> _pages = [
+  /*final List<Widget> _pages = [
     Button1Page(),
     Button2Page(),
     Button3Page(),
     Button4Page(),
     Button5Page(),
-  ];
+  ];*/
 
   @override
   Widget build(BuildContext context) {
@@ -122,22 +125,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 _changePage(2);
               },
             ),
-
-            /*IconButton(
-              icon: Icon(Icons.lunch_dining),
-              onPressed: () {
-                // Переход на страницу "SearchScreen" через маршрут
-                _changePage(3);
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.list),
-              onPressed: () {
-                // Переход на страницу "SearchScreen" через маршрут
-                _changePage(4);
-              },
-            ),*/
-            // Добавьте другие IconButton'ы по мере необходимости
           ],
         ),
       ),
@@ -166,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class Button1Page extends StatelessWidget {
+/*class Button1Page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -209,4 +196,4 @@ class Button5Page extends StatelessWidget {
       child: Text('Button 5 Page'),
     );
   }
-}
+}*/
