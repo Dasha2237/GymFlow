@@ -1,11 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final trackHeight = sliderTheme.trackHeight;
+    final trackLeft = offset.dx;
+    final trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
+    final trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
+  }
+}
+
+class _ProfileState extends State<Profile> {
+  double _currentSliderValue = 1;
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    double bmiLeft = 89;
+    Color colorText = const Color(0xFF7F7F7F);
+    Color colorBorder = const Color(0xFF7F7F7F);
+    Color colorBack = Colors.white;
+    const int weightCount = 55;
 
     return SingleChildScrollView(
       child: Column(
@@ -27,18 +57,6 @@ class Profile extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Positioned(
-                        top: 25,
-                        right: 50,
-                        child: Container(
-                          child: TextButton(
-                              onPressed: () {},
-                              child: Image.network(
-                                'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2F73d645ac9242f36ea2e9e2bc239d0343b523be83settings%201.png?alt=media&token=354ef17b-af22-4dd9-aba6-05466278bb73',
-                                width: 20,
-                                height: 20,
-                              )),
-                        )),
                     Positioned(
                         top: 50,
                         child: Container(
@@ -98,7 +116,7 @@ class Profile extends StatelessWidget {
               Container(
                 width: 328,
                 padding:
-                EdgeInsets.only(left: 24, bottom: 17, top: 17, right: 24),
+                    EdgeInsets.only(left: 24, bottom: 17, top: 17, right: 24),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -147,23 +165,23 @@ class Profile extends StatelessWidget {
                                     fontWeight: FontWeight.w400,
                                   ),
                                   children: [
-                                    TextSpan(
-                                        text: 'Follicular',
-                                        style: GoogleFonts.getFont(
-                                          'Merriweather Sans',
-                                          color: Color.fromRGBO(247, 37, 87, 1),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        )),
-                                    TextSpan(
-                                        text: ' phase',
-                                        style: GoogleFonts.getFont(
-                                          'Merriweather Sans',
-                                          color: Color.fromRGBO(176, 176, 176, 1),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ))
-                                  ])),
+                                TextSpan(
+                                    text: 'Follicular',
+                                    style: GoogleFonts.getFont(
+                                      'Merriweather Sans',
+                                      color: Color.fromRGBO(247, 37, 87, 1),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    )),
+                                TextSpan(
+                                    text: ' phase',
+                                    style: GoogleFonts.getFont(
+                                      'Merriweather Sans',
+                                      color: Color.fromRGBO(176, 176, 176, 1),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    ))
+                              ])),
                         )
                       ],
                     ),
@@ -288,7 +306,7 @@ class Profile extends StatelessWidget {
                 margin: EdgeInsets.only(top: 28),
                 width: 328,
                 padding:
-                EdgeInsets.only(left: 24, bottom: 17, top: 17, right: 24),
+                    EdgeInsets.only(left: 24, bottom: 17, top: 17, right: 24),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -326,7 +344,7 @@ class Profile extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '55,6kg',
+                          weightCount.toString() + 'kg',
                           style: GoogleFonts.getFont(
                             'Inter',
                             color: Colors.black,
@@ -366,7 +384,7 @@ class Profile extends StatelessWidget {
             children: [
               Container(
                 padding:
-                EdgeInsets.only(left: 24, bottom: 30, top: 17, right: 24),
+                    EdgeInsets.only(left: 24, bottom: 30, top: 17, right: 24),
                 margin: EdgeInsets.only(top: 28),
                 width: 328,
                 decoration: BoxDecoration(
@@ -452,13 +470,13 @@ class Profile extends StatelessWidget {
                                     ),
                                   ),
                                   Positioned(
-                                    left: 19,
+                                    left: bmiLeft,
                                     child: Container(
                                       width: 4,
                                       height: 14,
                                       clipBehavior: Clip.hardEdge,
                                       decoration: const BoxDecoration(
-                                        color: Color(0xFF3DFF73),
+                                        color: Color(0xFFF62457),
                                       ),
                                     ),
                                   ),
@@ -503,78 +521,99 @@ class Profile extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF62457),
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                                bottomLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20)),
-                          ),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.only(
-                              top: 7, bottom: 7, right: 11, left: 11),
-                          child: Text(
-                            'Loose weight',
-                            style: GoogleFonts.getFont(
-                              'Inter',
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
+                        TextButton(
+                          onPressed: () {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: colorBorder,
+                              ),
+                              color: colorBack,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20)),
                             ),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(
+                                top: 7, bottom: 7, right: 11, left: 11),
+                            child: Text(
+                              'Lose weight',
+                              style: GoogleFonts.getFont(
+                                'Inter',
+                                color: colorText,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
                           ),
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color(0xFF7F7F7F),
+                        TextButton(
+                          onPressed: () {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: colorBorder,
+                              ),
+                              color: colorBack,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20)),
                             ),
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                                bottomLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20)),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(
+                                top: 7, bottom: 7, right: 11, left: 11),
+                            child: Text(
+                              'Maintain weight',
+                              style: GoogleFonts.getFont(
+                                'Inter',
+                                color: colorText,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           ),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.only(
-                              top: 7, bottom: 7, right: 11, left: 11),
-                          child: Text(
-                            'Maintain weight',
-                            style: GoogleFonts.getFont(
-                              'Inter',
-                              color: const Color(0xFF7F7F7F),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
                           ),
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color(0xFF7F7F7F),
+                        TextButton(
+                          onPressed: () {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: colorBorder,
+                              ),
+                              color: colorBack,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20)),
                             ),
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                                bottomLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20)),
-                          ),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.only(
-                              top: 7, bottom: 7, right: 11, left: 11),
-                          child: Text(
-                            'Gain weight',
-                            style: GoogleFonts.getFont(
-                              'Inter',
-                              color: const Color(0xFF7F7F7F),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(
+                                top: 7, bottom: 7, right: 11, left: 11),
+                            child: Text(
+                              'Gain weight',
+                              style: GoogleFonts.getFont(
+                                'Inter',
+                                color: colorText,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
-                        )
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                        ),
                       ],
                     )
                   ],
@@ -609,56 +648,28 @@ class Profile extends StatelessWidget {
                       height: 31,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Container(
-                              height: 3,
-                              width: 300,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFd9d9d9),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20),
-                                    bottomLeft: Radius.circular(20),
-                                    bottomRight: Radius.circular(20)),
-                              ),
+                        Expanded(
+                          child: SliderTheme(
+                            data: SliderThemeData(
+                              // here
+                              trackShape: CustomTrackShape(),
                             ),
-                            Container(
-                              height: 3,
-                              width: 122,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF62457),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20),
-                                    bottomLeft: Radius.circular(20),
-                                    bottomRight: Radius.circular(20)),
-                              ),
+                            child: Slider(
+                              activeColor: const Color(0xFFF62457),
+                              value: _currentSliderValue,
+                              max: 7,
+                              divisions: 7,
+                              label: _currentSliderValue.round().toString(),
+                              onChanged: (double value) {
+                                setState(() {
+                                  _currentSliderValue = value;
+                                });
+                              },
                             ),
-                            Positioned(
-                                top: -3.5,
-                                left: 117,
-                                child: Container(
-                                  width: 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                      color: const Color(0xFFF62457),
-                                      shape: BoxShape.circle),
-                                ))
-                          ],
-                        ),
-                        Text(
-                          '4',
-                          style: GoogleFonts.getFont(
-                            'Inter',
-                            color: const Color(0xFF6b6b6b),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
                           ),
-                        )
+                        ),
                       ],
                     )
                   ],

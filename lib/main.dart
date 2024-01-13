@@ -1,8 +1,8 @@
 import 'Profile.dart';
 import 'Workout.dart';
 import 'package:flutter/material.dart';
-
 import 'HomePage.dart';
+import 'Button1Page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -86,15 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        //title: Text(widget.title),
-      ),
+      appBar: AppBar(),
       body: _buildBody(),
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -122,7 +114,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 _changePage(2);
               },
             ),
-
+            IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () {
+                // Переход на страницу "SearchScreen" через маршрут
+                _changePage(3);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.sports_gymnastics),
+              onPressed: () {
+                // Переход на страницу "SearchScreen" через маршрут
+                _changePage(4);
+              },
+            ),
             /*IconButton(
               icon: Icon(Icons.lunch_dining),
               onPressed: () {
@@ -152,6 +157,8 @@ class _MyHomePageState extends State<MyHomePage> {
         Profile(),
         HomePage(),
         Workout(),
+        Button1Page(),
+        Button2Page()
         //Button1Page(),
         //Button2Page(),
         // Добавьте другие страницы по мере необходимости

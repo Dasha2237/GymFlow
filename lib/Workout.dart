@@ -11,23 +11,7 @@ class Workout extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                  margin: EdgeInsets.only(right: 50, top: 13),
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Image.network(
-                      'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2Fa68a37830c20965bdade44300098c0227c421a26settings-sliders(1)%201.png?alt=media&token=d20e7094-2068-4731-a785-3e3c308a1c73',
-                      width: 20,
-                      height: 20,
-                      fit: BoxFit.cover,
-                    ),
-                  ))
-            ],
-          ),
-          SizedBox(height: 32),
+          SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -308,11 +292,13 @@ class Workout extends StatelessWidget {
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: Colors.white),
-                                      child: Container(height: 25,
+                                      child: Container(
+                                        height: 25,
                                         width: 25,
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: Colors.white),),
+                                            color: Colors.white),
+                                      ),
                                     ),
                                     SizedBox(height: 12),
                                     Text(

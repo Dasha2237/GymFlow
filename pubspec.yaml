@@ -39,6 +39,9 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   table_calendar: ^3.0.5
+  syncfusion_flutter_charts: ^24.1.45+1
+  chart_sparkline: ^1.0.14
+
 
 
 
