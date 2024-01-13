@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'main.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -271,7 +273,12 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         // Validate will return true if the form is valid, or false if
                         // the form is invalid.
-                        if (_formKey.currentState!.validate()) {}
+                        if (_formKey.currentState!.validate()) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => MyHomePage(title: 'Demo')),
+                          );
+                        }
                       },
                       child: Text(
                         'Submit',
