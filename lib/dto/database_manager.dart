@@ -67,6 +67,15 @@ class DatabaseManager {
 
   static void savePeriodDate(PeriodDate periodDate) {
     periodDateBox.add(periodDate);
+    getNextPeriodDate(periodDate);
+    getPreviousPeriodDate(periodDate);
+    printPeriodDates();
+    //printPeriodResults();
+    print("before sort");
+    sortPeriodDates();
+    printPeriodDates();
+    //printPeriodResults();
+    print("aftersort");
   }
 
   static List<PeriodDate> getPeriodDate() {
@@ -141,21 +150,23 @@ class DatabaseManager {
   static void sortHealthData() {
     List<HealthData> healthDataList = healthDataBox.values.toList();
     healthDataList.sort((a, b) => a.date.compareTo(b.date));
-    healthDataBox.clear();
-    healthDataBox.addAll(healthDataList);
+    for (int i = 0; i < healthDataList.length; i++) {
+      healthDataBox.putAt(i, healthDataList[i]);
+    }
   }
 
   //a method to sort period dates by date in periodDateBox
   static void sortPeriodDates() {
     List<PeriodDate> periodDateList = periodDateBox.values.toList();
     periodDateList.sort((a, b) => a.date.compareTo(b.date));
-    periodDateBox.clear();
-    periodDateBox.addAll(periodDateList);
+    for (int i = 0; i < periodDateList.length; i++) {
+      periodDateBox.putAt(i, periodDateList[i]);
+    }
   }
 
   //a fuction to calculate next period date
   static PeriodDate getNextPeriodDate(PeriodDate date){
-    int length = profileDataBox.values.first!.periodLength;
+    int length = profileDataBox.values.first!.cycleLength;
     DateTime nextDate = date.date.add(Duration(days: length));
     PeriodDate periodDate = PeriodDate(date: nextDate);
     periodDateBox.add(periodDate);
@@ -163,7 +174,7 @@ class DatabaseManager {
     return periodDate;
   }
   static PeriodDate getPreviousPeriodDate(PeriodDate date){
-    int length = profileDataBox.values.first!.periodLength;
+    int length = profileDataBox.values.first!.cycleLength;
     DateTime previousDate = date.date.subtract(Duration(days: length));
     PeriodDate periodDate = PeriodDate(date: previousDate);
     periodDateBox.add(periodDate);
@@ -201,6 +212,7 @@ class DatabaseManager {
         periodDates.add(periodDateList[i + 1]);
       }
     }
+    printPeriodDates();
     return periodDates;
   }
   static List<PeriodWithPhasesData> getPeriodsWithPhasesForCalendar(DateTime date) {
@@ -236,10 +248,44 @@ class DatabaseManager {
   static int getDaysBeforeNextPeriod(DateTime date) {
     List<PeriodDate> periodDateList = periodDateBox.values.toList();
     for (int i = 0; i < periodDateList.length; i++) {
-      if (isBefore(date, periodDateList[i].date)) {
-        return periodDateList[i + 1].date.difference(date).inDays;
+      if (isBetween(date, periodDateList[i].date, periodDateList[i + 1].date)) {
+        return periodDateList[i+1].date.difference(date).inDays == 0 ?
+        profileDataBox.values.first!.cycleLength :
+        periodDateList[i+1].date.difference(date).inDays;
       }
     }
     return periodDateList.first.date.difference(date).inDays;
+  }
+
+  // a method to get the number of day of the current cycle
+  static int getDayOfCycle(DateTime date) {
+    List<PeriodDate> periodDateList = periodDateBox.values.toList();
+    for (int i = 0; i < periodDateList.length - 1; i++) {
+      if (isBetween(date, periodDateList[i].date, periodDateList[i + 1].date)) {
+        if (isSameDay(date, periodDateList[i+1].date)){
+          return 1;
+        }
+        else{
+          return periodDateList[i+1].date.difference(date).inDays * -1;
+        }
+      }
+    }
+    return periodDateList.last.date.difference(date).inDays;
+  }
+
+  //a method to write down everything what in the periodBox
+  static printPeriodDates() {
+    List<PeriodDate> periodDateList = periodDateBox.values.toList();
+    for (int i = 0; i < periodDateList.length; i++) {
+      print('${periodDateList[i].date.day}.${periodDateList[i].date.month}.${periodDateList[i].date.year}\n');
+    }
+  }
+
+  // a method to print results of all methods for period for todays date
+  static printPeriodResults() {
+    DateTime date = DateTime.now();
+    print('Days before next period: ${getDaysBeforeNextPeriod(date)}');
+    print('Day of cycle: ${getDayOfCycle(date)}');
+    print('Period phase: ${getPeriodPhase(date)}');
   }
 }

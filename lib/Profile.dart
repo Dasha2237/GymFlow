@@ -137,7 +137,7 @@ class _ProfileState extends State<Profile> {
                             Row(
                               children: [
                                 Text(
-                                  '5 days until your next period',
+                                  '${DatabaseManager.getDaysBeforeNextPeriod(DateTime.now())} days before next period',
                                   style: GoogleFonts.getFont(
                                     'Inter',
                                     color: Color.fromRGBO(176, 176, 176, 1),
@@ -201,7 +201,7 @@ class _ProfileState extends State<Profile> {
                           margin: EdgeInsets.only(bottom: 5),
                           child: RichText(
                               text: TextSpan(
-                                  text: 'You are on day 12 of 28 in ',
+                                  text: 'You are on day ${DatabaseManager.getDayOfCycle(DateTime.now())} of ${profileData.cycleLength} in ',
                                   style: GoogleFonts.getFont(
                                     'Merriweather Sans',
                                     color: Color.fromRGBO(176, 176, 176, 1),
@@ -210,7 +210,7 @@ class _ProfileState extends State<Profile> {
                                   ),
                                   children: [
                                 TextSpan(
-                                    text: 'Follicular',
+                                    text: DatabaseManager.getPeriodPhase(DateTime.now()),
                                     style: GoogleFonts.getFont(
                                       'Merriweather Sans',
                                       color: Color.fromRGBO(247, 37, 87, 1),
