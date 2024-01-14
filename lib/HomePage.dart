@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_sport/dto/database_manager.dart';
+import 'package:app_sport/dto/health_data.dart';
 import 'package:app_sport/dto/profile_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,7 +14,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ProfileData? profileData = DatabaseManager.getProfileData();
+  HealthData healthData = DatabaseManager.getHealthDataByDate(DateTime.now());
   DateTime today = DateTime.now();
+  Map<DateTime, List<Event>> _events = {};
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
@@ -22,15 +25,15 @@ class _HomePageState extends State<HomePage> {
 
   void incrementCounter() {
     setState(() {
-      profileData!.weight += 0.10;
-      DatabaseManager.updateProfileData(profileData!);
+      healthData.weight += 0.10;
+      DatabaseManager.updateOrAddHealthData(healthData);
     });
   }
 
   void minusCounter() {
     setState(() {
-      profileData!.weight -= 0.10;
-      DatabaseManager.updateProfileData(profileData!);
+      healthData.weight -= 0.10;
+      DatabaseManager.updateOrAddHealthData(healthData);
     });
   }
 
@@ -64,7 +67,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double dailyCalorieIntake = 10*profileData!.weight.toInt()
+    healthData = DatabaseManager.getHealthDataByDate(DateTime.now());
+    double dailyCalorieIntake = 10*healthData.weight.toInt()
         + 6.25*profileData!.height.toInt() - 5 * profileData!.getAge() - 161;
     if (profileData!.aim == 'Lose weight') {
       dailyCalorieIntake *= 0.85;
@@ -461,7 +465,7 @@ class _HomePageState extends State<HomePage> {
                             Column(
                               children: [
                                 Text(
-                                  profileData!.weight.toStringAsFixed(1) + ' kg',
+                                  healthData.weight.toStringAsFixed(1) + ' kg',
                                   style: GoogleFonts.getFont(
                                     'Inter',
                                     color: Color.fromRGBO(0, 0, 0, 1),
@@ -591,4 +595,22 @@ class _HomePageState extends State<HomePage> {
       ),
     ));
   }
+}
+class Event {
+  final String name;
+  final Color color;
+
+  Event(this.name, this.color);
+}
+
+bool isSameDay(DateTime a, DateTime b) {
+  return a.year == b.year && a.month == b.month && a.day == b.day;
+}
+
+List<DateTime> daysInRange(DateTime start, DateTime end) {
+  final days = <DateTime>[];
+  for (var i = start; i.isBefore(end) || isSameDay(i, end); i = i.add(Duration(days: 1))) {
+    days.add(i);
+  }
+  return days;
 }

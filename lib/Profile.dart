@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app_sport/dto/health_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dto/database_manager.dart';
@@ -32,6 +33,7 @@ class _ProfileState extends State<Profile> {
   bool _isLoseWeight = false;
   bool _isMaintainWeight = false;
   bool _isGainWeight = false;
+  HealthData healthData = DatabaseManager.getHealthDataByDate(DateTime.now());
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -62,7 +64,7 @@ class _ProfileState extends State<Profile> {
     _isLoseWeight = profileData.aim == 'Lose weight';
     _isMaintainWeight = profileData.aim == 'Maintain weight';
     _isGainWeight = profileData.aim == 'Gain weight';
-    double BMI = profileData.weight / (profileData.height * profileData.height / 10000);
+    double BMI = healthData.weight / (profileData.height * profileData.height / 10000);
     //a field to store comment on your BMI
     if (BMI < 18.5) {
       //underweight
@@ -386,7 +388,7 @@ class _ProfileState extends State<Profile> {
                     Row(
                       children: [
                         Text(
-                          '${profileData.weight.toStringAsFixed(1)} kg',
+                          '${healthData.weight.toStringAsFixed(1)} kg',
                           style: GoogleFonts.getFont(
                             'Inter',
                             color: Colors.black,
