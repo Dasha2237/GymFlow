@@ -40,12 +40,9 @@ class ProfileData {
   @HiveField(9)
   late DateTime birthDate;
 
-  //a field to store goal weight
-  @HiveField(10)
-  late double goalWeight;
 
   // a field to store the date of the last period
-  @HiveField(11)
+  @HiveField(10)
   late DateTime lastPeriodDate;
 
 
@@ -62,8 +59,16 @@ class ProfileData {
     required this.aim,
     required this.workoutsPerWeek,
     required this.birthDate,
-    required this.goalWeight,
     required this.lastPeriodDate,
     // Add other parameters as needed
   });
+
+  int getAge() {
+    DateTime now = DateTime.now();
+    int age = now.year - birthDate.year;
+    if (now.month < birthDate.month || (now.month == birthDate.month && now.day < birthDate.day)) {
+      age--;
+    }
+    return age;
+  }
 }

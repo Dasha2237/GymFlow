@@ -1,3 +1,5 @@
+import 'package:app_sport/dto/database_manager.dart';
+import 'package:app_sport/dto/profile_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dob_input_field/dob_input_field.dart';
@@ -32,6 +34,21 @@ class _LoginPageState extends State<LoginPage> {
   Color colorText = const Color(0xFF7F7F7F);
   Color colorBorder = const Color(0xFF7F7F7F);
   Color colorBack = Colors.white;
+  Color colorPressed = const Color(0xFFF62457);
+  bool loseWeightPressed = false;
+  bool maintainWeightPressed = false;
+  bool gainWeightPressed = false;
+  XFile? savedImage;
+  String pathToImage = '';
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController heightController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
+  TextEditingController periodLengthController = TextEditingController();
+  TextEditingController cycleLengthController = TextEditingController();
+  TextEditingController workoutsPerWeekController = TextEditingController();
+  DateTime? birthDateSave;
+  DateTime? lastPeriodDateSave;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -64,6 +81,49 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  ProfileAvatar(
+                    radius: 100,
+                    allowEdit: true,
+                    backgroundColor: Colors.grey,
+                    addImageIcon: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.add_a_photo),
+                      ),
+                    ),
+                    removeImageIcon: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.close),
+                      ),
+                    ),
+                    onImageChanged: (XFile? image) {
+                      //save image to cloud and get the url
+                      //or
+                      //save image to local storage and get the path
+                      if (image != null) {
+                        setState(() {
+                          savedImage = image;
+                          pathToImage = image.path;
+                        });
+                      }
+                      //String? tempPath = image?.path;
+                      //savedImage = image!;
+                      //print(tempPath);
+                    },
+                    image: savedImage,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   TextFormField(
                     decoration: const InputDecoration(
                       focusedErrorBorder: OutlineInputBorder(
@@ -106,9 +166,66 @@ class _LoginPageState extends State<LoginPage> {
                           width: 2.0,
                         ),
                       ),
-                      hintText: 'Enter your full name',
+                      hintText: 'Enter your first name',
                       contentPadding: EdgeInsets.only(left: 20),
                     ),
+                    controller: firstNameController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      hintText: 'Enter your last name',
+                      contentPadding: EdgeInsets.only(left: 20),
+                    ),
+                    controller: lastNameController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter some text';
@@ -165,6 +282,7 @@ class _LoginPageState extends State<LoginPage> {
                       hintText: 'Enter your height (cm)',
                       contentPadding: EdgeInsets.only(left: 20),
                     ),
+                    controller: heightController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter some text';
@@ -221,6 +339,7 @@ class _LoginPageState extends State<LoginPage> {
                       hintText: 'Enter your weight (kg)',
                       contentPadding: EdgeInsets.only(left: 20),
                     ),
+                    controller: weightController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter some text';
@@ -273,16 +392,19 @@ class _LoginPageState extends State<LoginPage> {
                           width: 2.0,
                         ),
                       ),
-                      hintText: 'Enter your weight',
                       hintStyle: TextStyle(
                           color: const Color(0xFFF62457), fontSize: 12),
                       contentPadding: EdgeInsets.only(left: 20),
                     ),
-                    firstDate: DateTime(1900),
+                    firstDate: DateTime(1920),
                     lastDate: DateTime.now(),
                     showLabel: true,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     fieldLabelText: "Date of birth",
+                    onDateSubmitted: (DateTime dateTime) {
+                      //print(dateTime);
+                      birthDateSave = dateTime;
+                    },
                   ),
                   SizedBox(
                     height: 20,
@@ -334,11 +456,14 @@ class _LoginPageState extends State<LoginPage> {
                           color: const Color(0xFFF62457), fontSize: 12),
                       contentPadding: EdgeInsets.only(left: 20),
                     ),
-                    firstDate: DateTime(1900),
+                    firstDate: DateTime(2023),
                     lastDate: DateTime.now(),
                     showLabel: true,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    fieldLabelText: "Date of the last menstruation",
+                    fieldLabelText: "Date of the last period",
+                    onDateSubmitted: (DateTime dateTime) {
+                      lastPeriodDateSave = dateTime;
+                    },
                   ),
                   SizedBox(
                     height: 10,
@@ -386,9 +511,67 @@ class _LoginPageState extends State<LoginPage> {
                           width: 2.0,
                         ),
                       ),
-                      hintText: 'Duration of your menstruation',
+                      hintText: 'Duration of your period (days)',
                       contentPadding: EdgeInsets.only(left: 20),
                     ),
+                    controller: periodLengthController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFF62457),
+                          width: 2.0,
+                        ),
+                      ),
+                      hintText: 'Duration of your cycle (days)',
+                      contentPadding: EdgeInsets.only(left: 20),
+                    ),
+                    controller: cycleLengthController,
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter some text';
@@ -448,13 +631,19 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            loseWeightPressed = true;
+                            maintainWeightPressed = false;
+                            gainWeightPressed = false;
+                          });
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: colorBorder,
                             ),
-                            color: colorBack,
+                            color: loseWeightPressed ? colorPressed : colorBack,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(20),
                                 topRight: Radius.circular(20),
@@ -468,7 +657,7 @@ class _LoginPageState extends State<LoginPage> {
                             'Lose weight',
                             style: GoogleFonts.getFont(
                               'Inter',
-                              color: colorText,
+                              color: loseWeightPressed ? Colors.white : colorText,
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                             ),
@@ -479,13 +668,19 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            loseWeightPressed = false;
+                            maintainWeightPressed = true;
+                            gainWeightPressed = false;
+                          });
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: colorBorder,
                             ),
-                            color: colorBack,
+                            color: maintainWeightPressed ? colorPressed : colorBack,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(20),
                                 topRight: Radius.circular(20),
@@ -499,7 +694,7 @@ class _LoginPageState extends State<LoginPage> {
                             'Maintain weight',
                             style: GoogleFonts.getFont(
                               'Inter',
-                              color: colorText,
+                              color: maintainWeightPressed ? Colors.white : colorText,
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                             ),
@@ -510,13 +705,19 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            loseWeightPressed = false;
+                            maintainWeightPressed = false;
+                            gainWeightPressed = true;
+                          });
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: colorBorder,
                             ),
-                            color: colorBack,
+                            color: gainWeightPressed ? colorPressed : colorBack,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(20),
                                 topRight: Radius.circular(20),
@@ -530,7 +731,7 @@ class _LoginPageState extends State<LoginPage> {
                             'Gain weight',
                             style: GoogleFonts.getFont(
                               'Inter',
-                              color: colorText,
+                              color: gainWeightPressed ? Colors.white : colorText,
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                             ),
@@ -545,41 +746,6 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 20,
                   ),
-                  ProfileAvatar(
-                    radius: 100,
-                    allowEdit: true,
-                    backgroundColor: Colors.grey,
-                    addImageIcon: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.add_a_photo),
-                      ),
-                    ),
-                    removeImageIcon: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.close),
-                      ),
-                    ),
-                    onImageChanged: (XFile? image) {
-                      //save image to cloud and get the url
-                      //or
-                      //save image to local storage and get the path
-                      String? tempPath = image?.path;
-                      print(tempPath);
-                    },
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: ElevatedButton(
@@ -587,6 +753,19 @@ class _LoginPageState extends State<LoginPage> {
                         // Validate will return true if the form is valid, or false if
                         // the form is invalid.
                         if (_formKey.currentState!.validate()) {
+                          ProfileData profileData = ProfileData(
+                              name: firstNameController.text,
+                              surname: lastNameController.text,
+                              weight: double.parse(weightController.text),
+                              height: double.parse(heightController.text),
+                              imagePath: pathToImage,
+                              periodLength: int.parse(periodLengthController.text),
+                              cycleLength: int.parse(cycleLengthController.text),
+                              aim: loseWeightPressed ? 'Lose weight' : maintainWeightPressed ? 'Maintain weight' : 'Gain weight',
+                              workoutsPerWeek: _currentSliderValue.toInt(),
+                              birthDate: birthDateSave ?? DateTime.now(),
+                              lastPeriodDate: lastPeriodDateSave ?? DateTime.now());
+                          DatabaseManager.saveProfileData(profileData);
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

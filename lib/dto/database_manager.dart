@@ -38,4 +38,10 @@ class DatabaseManager {
   static ProfileData? getProfileData() {
     return profileDataBox.isNotEmpty ? profileDataBox.values.first : null;
   }
+  static clearProfileData() {
+    profileDataBox.clear();
+  }
+  static updateProfileData(ProfileData profileData) {
+    profileDataBox.putAt(0, profileData);
+  }
 }

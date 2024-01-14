@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dto/database_manager.dart';
@@ -27,6 +29,9 @@ class CustomTrackShape extends RoundedRectSliderTrackShape {
 
 class _ProfileState extends State<Profile> {
   double _currentSliderValue = 1;
+  bool _isLoseWeight = false;
+  bool _isMaintainWeight = false;
+  bool _isGainWeight = false;
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -35,24 +40,28 @@ class _ProfileState extends State<Profile> {
     Color colorText = const Color(0xFF7F7F7F);
     Color colorBorder = const Color(0xFF7F7F7F);
     Color colorBack = Colors.white;
+    Color colorPressed = const Color(0xFFF62457);
     const int weightCount = 55;
     ProfileData? profileData = DatabaseManager.getProfileData();
-    if (profileData ==null){
+    if (profileData == null) {
       profileData = ProfileData(
-        name: 'Name',
-        surname: 'Surname',
-        weight: 60,
-        height: 165,
-        imagePath: 'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2Fb1be28d46eda187a995279ac6451d1cdb3a7127fEllipse%2017.png?alt=media&token=8c730477-8152-4e71-8859-89bdcc53e1c4',
-        periodLength: 5,
-        cycleLength: 28,
-        aim: 'Lose weight',
-        workoutsPerWeek: 4,
-        birthDate: DateTime(2004,6,24),
-        goalWeight: 55,
-        lastPeriodDate: DateTime.now(),
-      );
+          name: 'Name',
+          surname: 'Surname',
+          weight: 55,
+          height: 170,
+          imagePath: 'lib/assets/profile_picture.png',
+          periodLength: 5,
+          cycleLength: 28,
+          aim: 'Lose weight',
+          workoutsPerWeek: 3,
+          birthDate: DateTime.now(),
+          lastPeriodDate: DateTime.now());
+      DatabaseManager.saveProfileData(profileData);
     }
+    _currentSliderValue = profileData.workoutsPerWeek.toDouble();
+    _isLoseWeight = profileData.aim == 'Lose weight';
+    _isMaintainWeight = profileData.aim == 'Maintain weight';
+    _isGainWeight = profileData.aim == 'Gain weight';
     double BMI = profileData.weight / (profileData.height * profileData.height / 10000);
     //a field to store comment on your BMI
     if (BMI < 18.5) {
@@ -107,10 +116,7 @@ class _ProfileState extends State<Profile> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.asset(
-                                      'lib/assets/profile_picture.png',
-                                      fit: BoxFit.cover,
-                                    ))
+                                    child: Image.file(File(profileData.imagePath)))
                               ],
                             ),
                             Row(
@@ -380,7 +386,7 @@ class _ProfileState extends State<Profile> {
                     Row(
                       children: [
                         Text(
-                          profileData.weight.toString() + ' kg',
+                          '${profileData.weight.toStringAsFixed(1)} kg',
                           style: GoogleFonts.getFont(
                             'Inter',
                             color: Colors.black,
@@ -393,7 +399,9 @@ class _ProfileState extends State<Profile> {
                     Row(
                       children: [
                         Text(
-                          '1 Nov.',
+                          DateTime.now().day.toString() +
+                              ' ' +
+                              DateTime.now().month.toString(),
                           style: GoogleFonts.getFont(
                             'Inter',
                             color: Colors.black,
@@ -558,13 +566,21 @@ class _ProfileState extends State<Profile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              _isLoseWeight = true;
+                              _isMaintainWeight = false;
+                              _isGainWeight = false;
+                              profileData!.aim = 'Lose weight';
+                              DatabaseManager.updateProfileData(profileData);
+                            });
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: colorBorder,
                               ),
-                              color: colorBack,
+                              color: _isLoseWeight ? colorPressed : colorBack,
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(20),
                                   topRight: Radius.circular(20),
@@ -578,7 +594,7 @@ class _ProfileState extends State<Profile> {
                               'Lose weight',
                               style: GoogleFonts.getFont(
                                 'Inter',
-                                color: colorText,
+                                color: _isLoseWeight ? Colors.white : colorText,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -589,13 +605,21 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              _isLoseWeight = false;
+                              _isMaintainWeight = true;
+                              _isGainWeight = false;
+                              profileData!.aim = 'Maintain weight';
+                              DatabaseManager.updateProfileData(profileData);
+                            });
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: colorBorder,
                               ),
-                              color: colorBack,
+                              color: _isMaintainWeight ? colorPressed : colorBack,
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(20),
                                   topRight: Radius.circular(20),
@@ -609,7 +633,7 @@ class _ProfileState extends State<Profile> {
                               'Maintain weight',
                               style: GoogleFonts.getFont(
                                 'Inter',
-                                color: colorText,
+                                color: _isMaintainWeight ? Colors.white : colorText,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -620,13 +644,21 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              _isLoseWeight = false;
+                              _isMaintainWeight = false;
+                              _isGainWeight = true;
+                              profileData!.aim = 'Gain weight';
+                              DatabaseManager.updateProfileData(profileData);
+                            });
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: colorBorder,
                               ),
-                              color: colorBack,
+                              color: _isGainWeight ? colorPressed : colorBack,
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(20),
                                   topRight: Radius.circular(20),
@@ -640,7 +672,7 @@ class _ProfileState extends State<Profile> {
                               'Gain weight',
                               style: GoogleFonts.getFont(
                                 'Inter',
-                                color: colorText,
+                                color: _isGainWeight ? Colors.white : colorText,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -699,6 +731,8 @@ class _ProfileState extends State<Profile> {
                               divisions: 7,
                               label: _currentSliderValue.round().toString(),
                               onChanged: (double value) {
+                                profileData!.workoutsPerWeek = value.toInt();
+                                DatabaseManager.updateProfileData(profileData!);
                                 setState(() {
                                   _currentSliderValue = value;
                                 });

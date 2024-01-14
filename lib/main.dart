@@ -8,6 +8,7 @@ import 'dto/database_manager.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseManager.init();
+  //DatabaseManager.clearProfileData();
   runApp(const MyApp());
 }
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginPage(), // Start with the RegistrationPage
+      home: DatabaseManager.getProfileData() != null ? MyHomePage(title: 'Demo'): LoginPage(), // Start with the RegistrationPage
     );
   }
 }

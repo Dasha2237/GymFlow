@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:app_sport/dto/database_manager.dart';
+import 'package:app_sport/dto/profile_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -8,6 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ProfileData? profileData = DatabaseManager.getProfileData();
   DateTime today = DateTime.now();
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -15,16 +20,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  double weightCount = 55.0;
   void incrementCounter() {
     setState(() {
-      weightCount = weightCount + 0.10;
+      profileData!.weight += 0.10;
+      DatabaseManager.updateProfileData(profileData!);
     });
   }
 
   void minusCounter() {
     setState(() {
-      weightCount = weightCount - 0.10;
+      profileData!.weight -= 0.10;
+      DatabaseManager.updateProfileData(profileData!);
     });
   }
 
@@ -55,8 +61,33 @@ class _HomePageState extends State<HomePage> {
   final colorMainOvulation = Color.fromARGB(255, 255, 165, 21);
   final colorSubOvulation = Color.fromARGB(255, 255, 206, 30);
 
+
   @override
   Widget build(BuildContext context) {
+    double dailyCalorieIntake = 10*profileData!.weight.toInt()
+        + 6.25*profileData!.height.toInt() - 5 * profileData!.getAge() - 161;
+    if (profileData!.aim == 'Lose weight') {
+      dailyCalorieIntake *= 0.85;
+    } else if (profileData!.aim == 'Gain weight') {
+      dailyCalorieIntake *= 1.15;
+    }
+    if (profileData!.workoutsPerWeek == 1) {
+      dailyCalorieIntake *= 1.1;
+    } else if (profileData!.workoutsPerWeek == 2) {
+      dailyCalorieIntake *= 1.2;
+    } else if (profileData!.workoutsPerWeek == 3) {
+      dailyCalorieIntake *= 1.3;
+    } else if (profileData!.workoutsPerWeek == 4) {
+      dailyCalorieIntake *= 1.35;
+    } else if (profileData!.workoutsPerWeek == 5) {
+      dailyCalorieIntake *= 1.4;
+    }
+    else if (profileData!.workoutsPerWeek == 6) {
+      dailyCalorieIntake *= 1.45;
+    }
+    else if (profileData!.workoutsPerWeek == 7) {
+      dailyCalorieIntake *= 1.5;
+    }
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -76,15 +107,12 @@ class _HomePageState extends State<HomePage> {
                         width: 50,
                         height: 50,
                         margin: EdgeInsets.only(right: 10),
-                        child: Image.asset(
-                          'lib/assets/profile_picture.png',
-                          fit: BoxFit.cover,
-                        )),
+                        child: Image.file(File(profileData!.imagePath))),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Hi, Karina!',
+                          'Hi, ${profileData!.name}!',
                           style: GoogleFonts.getFont(
                             'Merriweather Sans',
                             color: Colors.black,
@@ -372,7 +400,9 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Text(
-                                '01 nov',
+                                DateTime.now().day.toString() +
+                                    '.' +
+                                    DateTime.now().month.toString(),
                                 style: GoogleFonts.getFont(
                                   'Inter',
                                   color: Color.fromRGBO(0, 0, 0, 1),
@@ -431,7 +461,7 @@ class _HomePageState extends State<HomePage> {
                             Column(
                               children: [
                                 Text(
-                                  weightCount.toStringAsFixed(1) + 'kg',
+                                  profileData!.weight.toStringAsFixed(1) + ' kg',
                                   style: GoogleFonts.getFont(
                                     'Inter',
                                     color: Color.fromRGBO(0, 0, 0, 1),
@@ -527,7 +557,7 @@ class _HomePageState extends State<HomePage> {
                         height: 12,
                       ),
                       Text(
-                        '1853 Cal',
+                        dailyCalorieIntake.toInt().toString() + ' kcal',
                         style: GoogleFonts.getFont(
                           'Inter',
                           color: Color.fromRGBO(0, 0, 0, 1),
