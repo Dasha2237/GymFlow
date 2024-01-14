@@ -16,7 +16,6 @@ class _HomePageState extends State<HomePage> {
   ProfileData? profileData = DatabaseManager.getProfileData();
   HealthData healthData = DatabaseManager.getHealthDataByDate(DateTime.now());
   DateTime today = DateTime.now();
-  Map<DateTime, List<Event>> _events = {};
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
@@ -67,7 +66,25 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //DatabaseManager.printPeriodDates();
+    //DatabaseManager.printPeriodResults();
     healthData = DatabaseManager.getHealthDataByDate(DateTime.now());
+    String phase = DatabaseManager.getPeriodPhase(DateTime.now());
+    String title = '';
+    String info = '';
+    if (phase == 'Folicular') {
+      title = follicularTitle;
+      info = follicularInfo;
+    } else if (phase == 'Period') {
+      title = menstruationTitle;
+      info = menstruationInfo;
+    } else if (phase == 'Ovulation') {
+      title = ovulationTitle;
+      info = ovulationInfo;
+    } else if (phase == 'Luteal') {
+      title = lutealTitle;
+      info = lutealInfo;
+    }
     double dailyCalorieIntake = 10*healthData.weight.toInt()
         + 6.25*profileData!.height.toInt() - 5 * profileData!.getAge() - 161;
     if (profileData!.aim == 'Lose weight') {
@@ -331,7 +348,7 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      follicularTitle,
+                      title,
                       style: GoogleFonts.getFont(
                         'Merriweather Sans',
                         color: Color.fromARGB(255, 255, 255, 255),
@@ -342,7 +359,7 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       margin: EdgeInsets.only(top: 10, bottom: 10),
                       child: Text(
-                        follicularInfo,
+                        info,
                         style: GoogleFonts.getFont(
                           'Inter',
                           color: Color.fromARGB(255, 255, 255, 255),
@@ -595,22 +612,4 @@ class _HomePageState extends State<HomePage> {
       ),
     ));
   }
-}
-class Event {
-  final String name;
-  final Color color;
-
-  Event(this.name, this.color);
-}
-
-bool isSameDay(DateTime a, DateTime b) {
-  return a.year == b.year && a.month == b.month && a.day == b.day;
-}
-
-List<DateTime> daysInRange(DateTime start, DateTime end) {
-  final days = <DateTime>[];
-  for (var i = start; i.isBefore(end) || isSameDay(i, end); i = i.add(Duration(days: 1))) {
-    days.add(i);
-  }
-  return days;
 }

@@ -464,7 +464,14 @@ class _LoginPageState extends State<LoginPage> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     fieldLabelText: "Date of the beginning of the last period",
                     onDateSubmitted: (DateTime dateTime) {
-                      lastPeriodDateSave = dateTime;
+                      setState(() {
+                        lastPeriodDateSave = dateTime;
+                      });
+                    },
+                    onDateSaved: (DateTime dateTime) {
+                      setState(() {
+                        lastPeriodDateSave = dateTime;
+                      });
                     },
                   ),
                   SizedBox(
@@ -768,12 +775,13 @@ class _LoginPageState extends State<LoginPage> {
                               birthDate: birthDateSave ?? DateTime.now(),
                               lastPeriodDate: lastPeriodDateSave ?? DateTime.now());
                           DatabaseManager.saveProfileData(profileData);
+                          //print(lastPeriodDateSave.toString());
+                          //print(profileData.lastPeriodDate.toString());
                           HealthData healthData = HealthData(
                               date: DateTime.now(),
                               weight: double.parse(weightController.text));
                           DatabaseManager.saveHealthData(healthData);
-                          PeriodDate periodDate = PeriodDate(
-                              date: DateTime.now());
+                          PeriodDate periodDate = PeriodDate(date: DateTime.now());
                           DatabaseManager.savePeriodDate(periodDate);
                           Navigator.pushReplacement(
                             context,
