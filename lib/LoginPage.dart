@@ -49,9 +49,58 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController periodLengthController = TextEditingController();
   TextEditingController cycleLengthController = TextEditingController();
   TextEditingController workoutsPerWeekController = TextEditingController();
+
+  TextEditingController lastDayOfMenstruationController = TextEditingController();
   DateTime? birthDateSave;
   DateTime? lastPeriodDateSave;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool isNumeric(String x) {
+    bool f = false;
+    if (x == '1') f = true;
+    if (x == '2') f = true;
+    if (x == '3') f = true;
+    if (x == '4') f = true;
+    if (x == '5') f = true;
+    if (x == '6') f = true;
+    if (x == '7') f = true;
+    if (x == '8') f = true;
+    if (x == '9') f = true;
+    return f;
+  }
+
+  DateTime? isDateValid(String date) {
+    if (date.length != 10) {
+      print("len is not 10");
+      return null;
+    }
+
+    // Разделить строку на три части: день, месяц и год.
+    final List<String> parts = date.split('/');
+
+    // Проверить, является ли каждая часть числом.
+    if (isNumeric(parts[0]) && isNumeric(parts[1]) && isNumeric(parts[2])) {
+      // Преобразовать каждую часть в целое число.
+      final int day = int.parse(parts[0]);
+      final int month = int.parse(parts[1]);
+      final int year = int.parse(parts[2]);
+
+      // Проверить, является ли дата допустимой.
+      if (1 <= day && day <= 31 &&
+          1 <= month && month <= 12 &&
+          1900 <= year && year <= DateTime.now().year) {
+        return DateTime(year, month, day);
+      } else {
+        print("something");
+        print(day);
+        print(month);
+        print(year);
+      }
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -411,11 +460,13 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 20,
                   ),
-                  DOBInputField(
-                    inputDecoration: const InputDecoration(
+
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -423,7 +474,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -431,7 +482,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -439,7 +490,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       disabledBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -447,26 +498,84 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
                         ),
                       ),
-                      hintText: 'Enter your weight',
-                      hintStyle: TextStyle(
-                          color: const Color(0xFFF62457), fontSize: 12),
+                      hintText: 'Date of the beginning of the last period',
                       contentPadding: EdgeInsets.only(left: 20),
                     ),
-                    firstDate: DateTime(2023),
-                    lastDate: DateTime.now(),
-                    showLabel: true,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    fieldLabelText: "Date of the beginning of the last period",
-                    onDateSubmitted: (DateTime dateTime) {
-                      lastPeriodDateSave = dateTime;
+                    controller: lastDayOfMenstruationController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      if (isDateValid(value) == null) {
+                        return 'Invalid format';
+                      }
+                      return null;
                     },
                   ),
+
+                  // DOBInputField(
+                  //   inputDecoration: const InputDecoration(
+                  //     focusedErrorBorder: OutlineInputBorder(
+                  //       borderRadius:
+                  //           const BorderRadius.all(Radius.circular(50.0)),
+                  //       borderSide: BorderSide(
+                  //         color: Color(0xFFF62457),
+                  //         width: 2.0,
+                  //       ),
+                  //     ),
+                  //     focusedBorder: OutlineInputBorder(
+                  //       borderRadius:
+                  //           const BorderRadius.all(Radius.circular(50.0)),
+                  //       borderSide: BorderSide(
+                  //         color: Color(0xFFF62457),
+                  //         width: 2.0,
+                  //       ),
+                  //     ),
+                  //     errorBorder: OutlineInputBorder(
+                  //       borderRadius:
+                  //           const BorderRadius.all(Radius.circular(50.0)),
+                  //       borderSide: BorderSide(
+                  //         color: Color(0xFFF62457),
+                  //         width: 2.0,
+                  //       ),
+                  //     ),
+                  //     disabledBorder: OutlineInputBorder(
+                  //       borderRadius:
+                  //           const BorderRadius.all(Radius.circular(50.0)),
+                  //       borderSide: BorderSide(
+                  //         color: Color(0xFFF62457),
+                  //         width: 2.0,
+                  //       ),
+                  //     ),
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderRadius:
+                  //           const BorderRadius.all(Radius.circular(50.0)),
+                  //       borderSide: BorderSide(
+                  //         color: Color(0xFFF62457),
+                  //         width: 2.0,
+                  //       ),
+                  //     ),
+                  //     hintText: 'Enter your weight',
+                  //     hintStyle: TextStyle(
+                  //         color: const Color(0xFFF62457), fontSize: 12),
+                  //     contentPadding: EdgeInsets.only(left: 20),
+                  //   ),
+                  //   firstDate: DateTime(2023),
+                  //   lastDate: DateTime.now(),
+                  //   showLabel: true,
+                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                  //   fieldLabelText: "Date of the beginning of the last period",
+                  //   onDateSubmitted: (DateTime dateTime) {
+                  //     lastPeriodDateSave = dateTime;
+                  //   },
+                  //
+                  // ),
                   SizedBox(
                     height: 10,
                   ),
@@ -766,7 +875,10 @@ class _LoginPageState extends State<LoginPage> {
                               aim: loseWeightPressed ? 'Lose weight' : maintainWeightPressed ? 'Maintain weight' : 'Gain weight',
                               workoutsPerWeek: _currentSliderValue.toInt(),
                               birthDate: birthDateSave ?? DateTime.now(),
-                              lastPeriodDate: lastPeriodDateSave ?? DateTime.now());
+                              lastPeriodDate: isDateValid(lastDayOfMenstruationController.text)!
+                          );
+                          print(profileData.lastPeriodDate.toString());
+
                           DatabaseManager.saveProfileData(profileData);
                           HealthData healthData = HealthData(
                               date: DateTime.now(),
