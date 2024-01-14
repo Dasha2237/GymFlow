@@ -8,7 +8,7 @@ part of 'health_data.dart';
 
 class HealthDataAdapter extends TypeAdapter<HealthData> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
   HealthData read(BinaryReader reader) {
@@ -17,7 +17,7 @@ class HealthDataAdapter extends TypeAdapter<HealthData> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return HealthData(
-      date: fields[0] as String,
+      date: fields[0] as DateTime,
       weight: fields[1] as double,
     );
   }

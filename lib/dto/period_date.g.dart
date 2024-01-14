@@ -6,23 +6,23 @@ part of 'period_date.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class PeroiodDateAdapter extends TypeAdapter<PeroiodDate> {
+class PeriodDateAdapter extends TypeAdapter<PeriodDate> {
   @override
-  final int typeId = 0;
+  final int typeId = 2;
 
   @override
-  PeroiodDate read(BinaryReader reader) {
+  PeriodDate read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return PeroiodDate(
+    return PeriodDate(
       date: fields[0] as DateTime,
     );
   }
 
   @override
-  void write(BinaryWriter writer, PeroiodDate obj) {
+  void write(BinaryWriter writer, PeriodDate obj) {
     writer
       ..writeByte(1)
       ..writeByte(0)
@@ -35,7 +35,7 @@ class PeroiodDateAdapter extends TypeAdapter<PeroiodDate> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PeroiodDateAdapter &&
+      other is PeriodDateAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

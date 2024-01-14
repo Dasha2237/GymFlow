@@ -9,6 +9,8 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseManager.init();
   //DatabaseManager.clearProfileData();
+  //DatabaseManager.clearHealthData();
+  //DatabaseManager.clearPeriodDate();
   runApp(const MyApp());
 }
 

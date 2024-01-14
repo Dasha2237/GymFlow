@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app_sport/dto/health_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dto/database_manager.dart';
@@ -32,6 +33,7 @@ class _ProfileState extends State<Profile> {
   bool _isLoseWeight = false;
   bool _isMaintainWeight = false;
   bool _isGainWeight = false;
+  HealthData healthData = DatabaseManager.getHealthDataByDate(DateTime.now());
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -62,7 +64,7 @@ class _ProfileState extends State<Profile> {
     _isLoseWeight = profileData.aim == 'Lose weight';
     _isMaintainWeight = profileData.aim == 'Maintain weight';
     _isGainWeight = profileData.aim == 'Gain weight';
-    double BMI = profileData.weight / (profileData.height * profileData.height / 10000);
+    double BMI = healthData.weight / (profileData.height * profileData.height / 10000);
     //a field to store comment on your BMI
     if (BMI < 18.5) {
       //underweight
@@ -137,7 +139,7 @@ class _ProfileState extends State<Profile> {
                             Row(
                               children: [
                                 Text(
-                                  '5 days until your next period',
+                                  '${DatabaseManager.getDaysBeforeNextPeriod(DateTime.now())} days before next period',
                                   style: GoogleFonts.getFont(
                                     'Inter',
                                     color: Color.fromRGBO(176, 176, 176, 1),
@@ -201,7 +203,7 @@ class _ProfileState extends State<Profile> {
                           margin: EdgeInsets.only(bottom: 5),
                           child: RichText(
                               text: TextSpan(
-                                  text: 'You are on day 12 of 28 in ',
+                                  text: 'You are on day ${DatabaseManager.getDayOfCycle(DateTime.now())} of ${profileData.cycleLength} in ',
                                   style: GoogleFonts.getFont(
                                     'Merriweather Sans',
                                     color: Color.fromRGBO(176, 176, 176, 1),
@@ -210,7 +212,7 @@ class _ProfileState extends State<Profile> {
                                   ),
                                   children: [
                                 TextSpan(
-                                    text: 'Follicular',
+                                    text: DatabaseManager.getPeriodPhase(DateTime.now()),
                                     style: GoogleFonts.getFont(
                                       'Merriweather Sans',
                                       color: Color.fromRGBO(247, 37, 87, 1),
@@ -388,7 +390,7 @@ class _ProfileState extends State<Profile> {
                     Row(
                       children: [
                         Text(
-                          '${profileData.weight.toStringAsFixed(1)} kg',
+                          '${healthData.weight.toStringAsFixed(1)} kg',
                           style: GoogleFonts.getFont(
                             'Inter',
                             color: Colors.black,
