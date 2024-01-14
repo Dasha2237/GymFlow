@@ -82,6 +82,9 @@ flutter:
     - lib/assets/workout2.png
     - lib/assets/workout3.png
     - lib/assets/sport_thing.png
+    - lib/assets/burger.png
+    - lib/assets/arrow.png
+    - lib/assets/arrowleft.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

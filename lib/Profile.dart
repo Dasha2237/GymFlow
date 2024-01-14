@@ -113,10 +113,12 @@ class _ProfileState extends State<Profile> {
                                     height: 140,
                                     clipBehavior: Clip.antiAlias,
                                     margin: EdgeInsets.only(bottom: 10),
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Image.file(File(profileData.imagePath)))
+                                    child: Image.file(File(profileData.imagePath),
+                                        fit: BoxFit.cover),
+                                    )
                               ],
                             ),
                             Row(
@@ -463,8 +465,8 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         Container(
-                          child: Image.network(
-                            'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fns82maDPujTwEb3FbMMb%2Fced53fe00b7d36fb516c5dbe69b3b235c1fc6642chart-simple-horizontal%201.png?alt=media&token=449fd436-87f5-44c0-9c5b-fe0c0d524c8e',
+                          child: Image.asset(
+                            'lib/assets/burger.png',
                             width: 20,
                             height: 20,
                           ),
@@ -740,15 +742,6 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-                        Text(
-                          profileData.workoutsPerWeek.toString(),
-                          style: GoogleFonts.getFont(
-                            'Inter',
-                            color: const Color(0xFF6b6b6b),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )
                       ],
                     )
                   ],

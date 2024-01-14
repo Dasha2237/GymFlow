@@ -107,7 +107,12 @@ class _HomePageState extends State<HomePage> {
                         width: 50,
                         height: 50,
                         margin: EdgeInsets.only(right: 10),
-                        child: Image.file(File(profileData!.imagePath))),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                        child: Image.file(File(profileData!.imagePath),
+                        fit: BoxFit.cover)),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -271,8 +276,8 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     Container(
-                                      child: Image.network(
-                                        'https://storage.googleapis.com/codeless-dev.appspot.com/uploads%2Fimages%2Fns82maDPujTwEb3FbMMb%2F80519a6dc06abe2034fbc195b50260a5.png',
+                                      child: Image.asset(
+                                        'lib/assets/arrow.png',
                                         width: 6,
                                         height: 10,
                                         fit: BoxFit.contain,
@@ -445,8 +450,8 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Container(
-                                          child: Image.network(
-                                            'https://storage.googleapis.com/codeless-dev.appspot.com/uploads%2Fimages%2Fns82maDPujTwEb3FbMMb%2Faa167da7cd1c8efa241e0d46017b8f51.png',
+                                          child: Image.asset(
+                                            'lib/assets/arrowleft.png',
                                             width: 6,
                                             height: 10,
                                             fit: BoxFit.contain,
@@ -498,8 +503,8 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Container(
-                                          child: Image.network(
-                                            'https://storage.googleapis.com/codeless-dev.appspot.com/uploads%2Fimages%2Fns82maDPujTwEb3FbMMb%2F80519a6dc06abe2034fbc195b50260a5.png',
+                                          child: Image.asset(
+                                            'lib/assets/arrow.png',
                                             width: 6,
                                             height: 10,
                                             fit: BoxFit.contain,
