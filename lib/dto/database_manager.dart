@@ -112,6 +112,13 @@ class DatabaseManager {
     return date1.year == date2.year && date1.month == date2.month;
   }
 
+  // a method to understand if date is between or the same as first and second date
+  static bool isBetween(DateTime date, DateTime firstDate, DateTime secondDate) {
+    return isAfter(date, firstDate) && isBefore(date, secondDate) || isSameDay(date, firstDate) || isSameDay(date, secondDate);
+  }
+
+
+
   static HealthData getHealthDataByDate(DateTime date) {
     List<HealthData> healthDataList = healthDataBox.values.toList();
     for (int i = 0; i < healthDataList.length; i++) {
@@ -203,5 +210,36 @@ class DatabaseManager {
       periodsWithPhases.add(PeriodWithPhasesData(periodDatesInMonth[i], profileDataBox.values.first!.periodLength, profileDataBox.values.first!.cycleLength));
     }
     return periodsWithPhases;
+  }
+  static String getPeriodPhase(DateTime date){
+    List<PeriodWithPhasesData> periodsWithPhases = getPeriodsWithPhasesForCalendar(date);
+    for (int i = 0; i < periodsWithPhases.length; i++) {
+      PeriodWithPhasesData periodWithPhases = periodsWithPhases[i];
+      if (isBetween(date, periodWithPhases.periodStartDate, periodWithPhases.periodEndDate)){
+        if (isBetween(date, periodWithPhases.folicularPhaseStartDate, periodWithPhases.folicularPhaseEndDate)){
+          return 'Folicular';
+        }
+        if (isBetween(date, periodWithPhases.ovulationPhaseStartDate, periodWithPhases.ovulationPhaseEndDate)){
+          return 'Ovulation';
+        }
+        if (isBetween(date, periodWithPhases.lutealPhaseStartDate, periodWithPhases.lutealPhaseEndDate)){
+          return 'Luteal';
+        }
+        if (isBetween(date, periodWithPhases.periodStartDate, periodWithPhases.periodEndDate)){
+          return 'Period';
+        }
+      }
+    }
+    return 'No data';
+  }
+  // a method to get the number of days before next period
+  static int getDaysBeforeNextPeriod(DateTime date) {
+    List<PeriodDate> periodDateList = periodDateBox.values.toList();
+    for (int i = 0; i < periodDateList.length; i++) {
+      if (isBefore(date, periodDateList[i].date)) {
+        return periodDateList[i + 1].date.difference(date).inDays;
+      }
+    }
+    return periodDateList.first.date.difference(date).inDays;
   }
 }
