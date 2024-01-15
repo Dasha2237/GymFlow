@@ -2,10 +2,10 @@ import 'package:hive/hive.dart';
 
 part 'health_data.g.dart'; // This is the generated file
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 1)
 class HealthData {
   @HiveField(0)
-  late String date;
+  late DateTime date;
 
   @HiveField(1)
   late double weight;

@@ -2,6 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Workout extends StatelessWidget {
+  int numberOfWorkout = 1;
+  List<String> excercises = [
+    '5 приседаний',
+    '20 отжиманий',
+    'Соснуть хуйца',
+    'И заебца',
+    'Растяжка'
+  ];
+
+  String get excercisesText {
+    return excercises.map((exercise) => '\u2022 $exercise').toList().join('\n');
+  }
+
+  void _showPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Workout #'+ numberOfWorkout.toString()),
+          content: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Your excercises today:'),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(excercisesText)
+              ],
+            ),
+          ),
+            actions: [
+            Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+        TextButton(
+        onPressed: () {},
+        child: Text('Сompleted'),
+        ),
+        TextButton(
+        onPressed: () {
+        Navigator.of(context).pop();
+        },
+        child: Text('Сlose'),
+        ),
+        ],
+        )]);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -16,7 +67,9 @@ class Workout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _showPopup(context);
+                  },
                   child: Stack(
                     children: [
                       Container(
@@ -130,7 +183,9 @@ class Workout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _showPopup(context);
+                  },
                   child: Stack(
                     children: [
                       Container(
@@ -244,7 +299,9 @@ class Workout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _showPopup(context);
+                  },
                   child: Stack(
                     children: [
                       Container(

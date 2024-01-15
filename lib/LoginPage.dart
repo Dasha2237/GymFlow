@@ -1,4 +1,6 @@
 import 'package:app_sport/dto/database_manager.dart';
+import 'package:app_sport/dto/health_data.dart';
+import 'package:app_sport/dto/period_date.dart';
 import 'package:app_sport/dto/profile_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -460,9 +462,16 @@ class _LoginPageState extends State<LoginPage> {
                     lastDate: DateTime.now(),
                     showLabel: true,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    fieldLabelText: "Date of the last period",
+                    fieldLabelText: "Date of the beginning of the last period",
                     onDateSubmitted: (DateTime dateTime) {
-                      lastPeriodDateSave = dateTime;
+                      setState(() {
+                        lastPeriodDateSave = dateTime;
+                      });
+                    },
+                    onDateSaved: (DateTime dateTime) {
+                      setState(() {
+                        lastPeriodDateSave = dateTime;
+                      });
                     },
                   ),
                   SizedBox(
@@ -758,7 +767,7 @@ class _LoginPageState extends State<LoginPage> {
                               surname: lastNameController.text,
                               weight: double.parse(weightController.text),
                               height: double.parse(heightController.text),
-                              imagePath: pathToImage,
+                              imagePath: pathToImage == '' ? 'assets/profile_picture.png' : pathToImage,
                               periodLength: int.parse(periodLengthController.text),
                               cycleLength: int.parse(cycleLengthController.text),
                               aim: loseWeightPressed ? 'Lose weight' : maintainWeightPressed ? 'Maintain weight' : 'Gain weight',
@@ -766,6 +775,14 @@ class _LoginPageState extends State<LoginPage> {
                               birthDate: birthDateSave ?? DateTime.now(),
                               lastPeriodDate: lastPeriodDateSave ?? DateTime.now());
                           DatabaseManager.saveProfileData(profileData);
+                          //print(lastPeriodDateSave.toString());
+                          //print(profileData.lastPeriodDate.toString());
+                          HealthData healthData = HealthData(
+                              date: DateTime.now(),
+                              weight: double.parse(weightController.text));
+                          DatabaseManager.saveHealthData(healthData);
+                          PeriodDate periodDate = PeriodDate(date: DateTime.now());
+                          DatabaseManager.savePeriodDate(periodDate);
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

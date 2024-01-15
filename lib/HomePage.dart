@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_sport/dto/database_manager.dart';
+import 'package:app_sport/dto/health_data.dart';
 import 'package:app_sport/dto/profile_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ProfileData? profileData = DatabaseManager.getProfileData();
+  HealthData healthData = DatabaseManager.getHealthDataByDate(DateTime.now());
   DateTime today = DateTime.now();
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -22,15 +24,15 @@ class _HomePageState extends State<HomePage> {
 
   void incrementCounter() {
     setState(() {
-      profileData!.weight += 0.10;
-      DatabaseManager.updateProfileData(profileData!);
+      healthData.weight += 0.10;
+      DatabaseManager.updateOrAddHealthData(healthData);
     });
   }
 
   void minusCounter() {
     setState(() {
-      profileData!.weight -= 0.10;
-      DatabaseManager.updateProfileData(profileData!);
+      healthData.weight -= 0.10;
+      DatabaseManager.updateOrAddHealthData(healthData);
     });
   }
 
@@ -64,7 +66,26 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double dailyCalorieIntake = 10*profileData!.weight.toInt()
+    //DatabaseManager.printPeriodDates();
+    //DatabaseManager.printPeriodResults();
+    healthData = DatabaseManager.getHealthDataByDate(DateTime.now());
+    String phase = DatabaseManager.getPeriodPhase(DateTime.now());
+    String title = '';
+    String info = '';
+    if (phase == 'Folicular') {
+      title = follicularTitle;
+      info = follicularInfo;
+    } else if (phase == 'Period') {
+      title = menstruationTitle;
+      info = menstruationInfo;
+    } else if (phase == 'Ovulation') {
+      title = ovulationTitle;
+      info = ovulationInfo;
+    } else if (phase == 'Luteal') {
+      title = lutealTitle;
+      info = lutealInfo;
+    }
+    double dailyCalorieIntake = 10*healthData.weight.toInt()
         + 6.25*profileData!.height.toInt() - 5 * profileData!.getAge() - 161;
     if (profileData!.aim == 'Lose weight') {
       dailyCalorieIntake *= 0.85;
@@ -107,7 +128,12 @@ class _HomePageState extends State<HomePage> {
                         width: 50,
                         height: 50,
                         margin: EdgeInsets.only(right: 10),
-                        child: Image.file(File(profileData!.imagePath))),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                        child: Image.file(File(profileData!.imagePath),
+                        fit: BoxFit.cover)),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -271,8 +297,8 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     Container(
-                                      child: Image.network(
-                                        'https://storage.googleapis.com/codeless-dev.appspot.com/uploads%2Fimages%2Fns82maDPujTwEb3FbMMb%2F80519a6dc06abe2034fbc195b50260a5.png',
+                                      child: Image.asset(
+                                        'lib/assets/arrow.png',
                                         width: 6,
                                         height: 10,
                                         fit: BoxFit.contain,
@@ -327,7 +353,7 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      follicularTitle,
+                      title,
                       style: GoogleFonts.getFont(
                         'Merriweather Sans',
                         color: Color.fromARGB(255, 255, 255, 255),
@@ -338,7 +364,7 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       margin: EdgeInsets.only(top: 10, bottom: 10),
                       child: Text(
-                        follicularInfo,
+                        info,
                         style: GoogleFonts.getFont(
                           'Inter',
                           color: Color.fromARGB(255, 255, 255, 255),
@@ -445,8 +471,8 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Container(
-                                          child: Image.network(
-                                            'https://storage.googleapis.com/codeless-dev.appspot.com/uploads%2Fimages%2Fns82maDPujTwEb3FbMMb%2Faa167da7cd1c8efa241e0d46017b8f51.png',
+                                          child: Image.asset(
+                                            'lib/assets/arrowleft.png',
                                             width: 6,
                                             height: 10,
                                             fit: BoxFit.contain,
@@ -461,7 +487,7 @@ class _HomePageState extends State<HomePage> {
                             Column(
                               children: [
                                 Text(
-                                  profileData!.weight.toStringAsFixed(1) + ' kg',
+                                  healthData.weight.toStringAsFixed(1) + ' kg',
                                   style: GoogleFonts.getFont(
                                     'Inter',
                                     color: Color.fromRGBO(0, 0, 0, 1),
@@ -498,8 +524,8 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Container(
-                                          child: Image.network(
-                                            'https://storage.googleapis.com/codeless-dev.appspot.com/uploads%2Fimages%2Fns82maDPujTwEb3FbMMb%2F80519a6dc06abe2034fbc195b50260a5.png',
+                                          child: Image.asset(
+                                            'lib/assets/arrow.png',
                                             width: 6,
                                             height: 10,
                                             fit: BoxFit.contain,

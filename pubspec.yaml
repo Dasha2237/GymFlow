@@ -45,7 +45,6 @@ dependencies:
   dob_input_field: ^2.0.0
   image_input: ^0.0.2
 
-
   path_provider: ^2.0.5
 
 
@@ -82,6 +81,9 @@ flutter:
     - lib/assets/workout2.png
     - lib/assets/workout3.png
     - lib/assets/sport_thing.png
+    - lib/assets/burger.png
+    - lib/assets/arrow.png
+    - lib/assets/arrowleft.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
