@@ -56,16 +56,12 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   DateTime? isDateValid(String date) {
-    print("validation of $date");
     if (date.length != 10) {
-      print("len is not 10");
       return null;
     }
 
     // Разделить строку на три части: день, месяц и год.
     final List<String> parts = date.split('/');
-    // print all part
-    print(parts.toString());
 
     // Проверить, является ли каждая часть числом.
     if (int.tryParse(parts[0]) != null && int.tryParse(parts[1]) != null && int.tryParse(parts[2]) != null) {
@@ -73,16 +69,13 @@ class _LoginPageState extends State<LoginPage> {
       final int day = int.parse(parts[0]);
       final int month = int.parse(parts[1]);
       final int year = int.parse(parts[2]);
-      print("parsed");
 
       // Проверить, является ли дата допустимой.
       if (1 <= day && day <= 31 &&
           1 <= month && month <= 12 &&
           1900 <= year && year <= DateTime.now().year) {
-        print("valid");
         return DateTime(year, month, day);
       } else {
-        print("invalid");
         return null;
       }
     } else {
@@ -155,9 +148,6 @@ class _LoginPageState extends State<LoginPage> {
                           pathToImage = image.path;
                         });
                       }
-                      //String? tempPath = image?.path;
-                      //savedImage = image!;
-                      //print(tempPath);
                     },
                     image: savedImage,
                   ),
@@ -796,13 +786,13 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         // Validate will return true if the form is valid, or false if
                         // the form is invalid.
-                        if (_formKey.currentState!.validate()) {
+                        if (_formKey.currentState!.validate() && pathToImage != '') {
                           ProfileData profileData = ProfileData(
                               name: firstNameController.text,
                               surname: lastNameController.text,
                               weight: double.parse(weightController.text),
                               height: double.parse(heightController.text),
-                              imagePath: pathToImage == '' ? 'assets/profile_picture.png' : pathToImage,
+                              imagePath: pathToImage,
                               periodLength: int.parse(periodLengthController.text),
                               cycleLength: int.parse(cycleLengthController.text),
                               aim: loseWeightPressed ? 'Lose weight' : maintainWeightPressed ? 'Maintain weight' : 'Gain weight',
@@ -810,8 +800,6 @@ class _LoginPageState extends State<LoginPage> {
                               birthDate: isDateValid(birthDateController.text)!,
                               lastPeriodDate: isDateValid(lastDayOfMenstruationController.text)!);
                           DatabaseManager.saveProfileData(profileData);
-                          //print(lastPeriodDateSave.toString());
-                          //print(profileData.lastPeriodDate.toString());
                           HealthData healthData = HealthData(
                               date: DateTime.now(),
                               weight: double.parse(weightController.text));

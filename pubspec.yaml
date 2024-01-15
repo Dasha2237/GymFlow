@@ -44,6 +44,7 @@ dependencies:
   flutter_profile_picture: ^2.0.0
   dob_input_field: ^2.0.0
   image_input: ^0.0.2
+  fl_chart: ^0.36.4
 
   path_provider: ^2.0.5
 

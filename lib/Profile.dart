@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_sport/dto/health_data.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dto/database_manager.dart';
@@ -26,6 +27,26 @@ class CustomTrackShape extends RoundedRectSliderTrackShape {
     final trackWidth = parentBox.size.width;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
+}
+
+double getMaxYValue(List<FlSpot> data) {
+  double max = 0;
+  for (FlSpot spot in data) {
+    if (spot.y > max) {
+      max = spot.y;
+    }
+  }
+  return max;
+}
+
+double getMinYValue(List<FlSpot> data) {
+  double min = double.infinity;
+  for (FlSpot spot in data) {
+    if (spot.y < min) {
+      min = spot.y;
+    }
+  }
+  return min;
 }
 
 class _ProfileState extends State<Profile> {
@@ -75,12 +96,21 @@ class _ProfileState extends State<Profile> {
     } else if (BMI >= 30) {
       //obesity
     }
-
-    //a field to store color of Lose weight button
-    if (profileData.aim == 'Lose weight') {
-      Color loseWeightButton = Color.fromARGB(255, 255, 255, 255);
+    List<FlSpot> plotData = [];
+    List<HealthData> healthDataList = DatabaseManager.getHealthData();
+    // get the last 10 days if possible and convert to FlSpot
+    if (healthDataList.length > 7) {
+      for (int i = healthDataList.length - 7; i < healthDataList.length; i++) {
+        plotData.add(FlSpot(
+            (i - healthDataList.length - 6).toDouble(),
+            healthDataList[i].weight));
+      }
     } else {
-      Color loseWeightButton = Color(0xFF7F7F7F);
+      for (int i = 0; i < healthDataList.length; i++) {
+        plotData.add(FlSpot(
+            (i + 1).toDouble(),
+            healthDataList[i].weight));
+      }
     }
 
 
@@ -403,9 +433,7 @@ class _ProfileState extends State<Profile> {
                     Row(
                       children: [
                         Text(
-                          DateTime.now().day.toString() +
-                              ' ' +
-                              DateTime.now().month.toString(),
+                          '${DateTime.now().day}.${DateTime.now().month}',
                           style: GoogleFonts.getFont(
                             'Inter',
                             color: Colors.black,
@@ -416,11 +444,33 @@ class _ProfileState extends State<Profile> {
                       ],
                     ),
                     Row(
+                      //widget to move next container to the right
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          width: 263,
+                          width: 220,
                           height: 68,
                           margin: EdgeInsets.only(top: 20),
+                          child: LineChart(
+                            LineChartData(
+                              gridData: FlGridData(show: false),
+                              titlesData: FlTitlesData(show: true),
+                              borderData: FlBorderData(show: false),
+                              minX: 1,
+                              maxX: 7,
+                              minY: getMinYValue(plotData) - 0.2,
+                              maxY: getMaxYValue(plotData),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: plotData,
+                                  isCurved: true,
+                                  colors: [Color(0xFFF62457)],
+                                  dotData: FlDotData(show: true),
+                                  belowBarData: BarAreaData(show: false),
+                                ),
+                              ],
+                            ),
+                          ),
                         )
                       ],
                     ),

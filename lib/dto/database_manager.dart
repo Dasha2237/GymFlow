@@ -81,13 +81,7 @@ class DatabaseManager {
     periodDateBox.add(periodDate);
     getNextPeriodDate(periodDate);
     getPreviousPeriodDate(periodDate);
-    printPeriodDates();
-    //printPeriodResults();
-    print("before sort");
     sortPeriodDates();
-    printPeriodDates();
-    //printPeriodResults();
-    print("aftersort");
   }
 
   static List<PeriodDate> getPeriodDate() {
@@ -198,6 +192,7 @@ class DatabaseManager {
   static List<PeriodDate> getPeriodDatesForMonth(DateTime date) {
     List<PeriodDate> periodDateList = periodDateBox.values.toList();
     List<PeriodDate> periodDates = [];
+    sortPeriodDates();
     if (isBefore(date, periodDateList.first.date)) {
       PeriodDate currentPeriodDate = periodDateList.first;
       while (isBefore(date, currentPeriodDate.date)) {
@@ -217,16 +212,19 @@ class DatabaseManager {
       sortPeriodDates();
     }
     periodDateList = periodDateBox.values.toList();
-    for (int i = 0; i < periodDateList.length; i++) {
-      if (isSameMonth(date, periodDateList[i].date)) {
-        periodDates.add(periodDateList[i-1]);
+    for (int i = 0; i  < periodDateList.length - 1; i++) {
+      if (isBetween(date, periodDateList[i].date, periodDateList[i + 1].date)) {
+        if (i == 0){
+          periodDates.add(getPreviousPeriodDate(periodDateList[i]));
+        }
+        else{
+          periodDates.add(periodDateList[i-1]);
+        }
         periodDates.add(periodDateList[i]);
         periodDates.add(periodDateList[i + 1]);
         break;
       }
     }
-    print("3 period dates ${DateTime.now().toString()}");
-    printPeriodDates();
     return periodDates;
   }
   static List<PeriodWithPhasesData> getPeriodsWithPhasesForCalendar(DateTime date) {
