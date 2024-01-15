@@ -222,8 +222,10 @@ class DatabaseManager {
         periodDates.add(periodDateList[i-1]);
         periodDates.add(periodDateList[i]);
         periodDates.add(periodDateList[i + 1]);
+        break;
       }
     }
+    print("3 period dates ${DateTime.now().toString()}");
     printPeriodDates();
     return periodDates;
   }
@@ -239,7 +241,7 @@ class DatabaseManager {
     List<PeriodWithPhasesData> periodsWithPhases = getPeriodsWithPhasesForCalendar(date);
     for (int i = 0; i < periodsWithPhases.length; i++) {
       PeriodWithPhasesData periodWithPhases = periodsWithPhases[i];
-      if (isBetween(date, periodWithPhases.periodStartDate, periodWithPhases.periodEndDate)){
+      if (isBetween(date, periodWithPhases.periodStartDate, periodWithPhases.lutealPhaseEndDate)){
         if (isBetween(date, periodWithPhases.folicularPhaseStartDate, periodWithPhases.folicularPhaseEndDate)){
           return 'Folicular';
         }
