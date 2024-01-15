@@ -49,9 +49,40 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController periodLengthController = TextEditingController();
   TextEditingController cycleLengthController = TextEditingController();
   TextEditingController workoutsPerWeekController = TextEditingController();
+  TextEditingController lastDayOfMenstruationController = TextEditingController();
+  TextEditingController birthDateController = TextEditingController();
   DateTime? birthDateSave;
   DateTime? lastPeriodDateSave;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  DateTime? isDateValid(String date) {
+    if (date.length != 10) {
+      return null;
+    }
+
+    // Разделить строку на три части: день, месяц и год.
+    final List<String> parts = date.split('/');
+
+    // Проверить, является ли каждая часть числом.
+    if (int.tryParse(parts[0]) != null && int.tryParse(parts[1]) != null && int.tryParse(parts[2]) != null) {
+      // Преобразовать каждую часть в целое число.
+      final int day = int.parse(parts[0]);
+      final int month = int.parse(parts[1]);
+      final int year = int.parse(parts[2]);
+
+      // Проверить, является ли дата допустимой.
+      if (1 <= day && day <= 31 &&
+          1 <= month && month <= 12 &&
+          1900 <= year && year <= DateTime.now().year) {
+        return DateTime(year, month, day);
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,9 +148,6 @@ class _LoginPageState extends State<LoginPage> {
                           pathToImage = image.path;
                         });
                       }
-                      //String? tempPath = image?.path;
-                      //savedImage = image!;
-                      //print(tempPath);
                     },
                     image: savedImage,
                   ),
@@ -352,11 +380,13 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 20,
                   ),
-                  DOBInputField(
-                    inputDecoration: const InputDecoration(
+
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -364,7 +394,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -372,7 +402,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -380,7 +410,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       disabledBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -388,34 +418,36 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
                         ),
                       ),
-                      hintStyle: TextStyle(
-                          color: const Color(0xFFF62457), fontSize: 12),
+                      hintText: ' DD/MM/YYYY Date of birth',
                       contentPadding: EdgeInsets.only(left: 20),
                     ),
-                    firstDate: DateTime(1920),
-                    lastDate: DateTime.now(),
-                    showLabel: true,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    fieldLabelText: "Date of birth",
-                    onDateSubmitted: (DateTime dateTime) {
-                      //print(dateTime);
-                      birthDateSave = dateTime;
+                    controller: birthDateController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      if (isDateValid(value) == null) {
+                        return 'Invalid format';
+                      }
+                      return null;
                     },
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  DOBInputField(
-                    inputDecoration: const InputDecoration(
+
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -423,7 +455,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -431,7 +463,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -439,7 +471,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       disabledBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
@@ -447,31 +479,24 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
+                        const BorderRadius.all(Radius.circular(50.0)),
                         borderSide: BorderSide(
                           color: Color(0xFFF62457),
                           width: 2.0,
                         ),
                       ),
-                      hintText: 'Enter your weight',
-                      hintStyle: TextStyle(
-                          color: const Color(0xFFF62457), fontSize: 12),
+                      hintText: 'DD/MM/YYYY first day of the last period',
                       contentPadding: EdgeInsets.only(left: 20),
                     ),
-                    firstDate: DateTime(2023),
-                    lastDate: DateTime.now(),
-                    showLabel: true,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    fieldLabelText: "Date of the beginning of the last period",
-                    onDateSubmitted: (DateTime dateTime) {
-                      setState(() {
-                        lastPeriodDateSave = dateTime;
-                      });
-                    },
-                    onDateSaved: (DateTime dateTime) {
-                      setState(() {
-                        lastPeriodDateSave = dateTime;
-                      });
+                    controller: lastDayOfMenstruationController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      if (isDateValid(value) == null) {
+                        return 'Invalid format';
+                      }
+                      return null;
                     },
                   ),
                   SizedBox(
@@ -761,27 +786,25 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         // Validate will return true if the form is valid, or false if
                         // the form is invalid.
-                        if (_formKey.currentState!.validate()) {
+                        if (_formKey.currentState!.validate() && pathToImage != '') {
                           ProfileData profileData = ProfileData(
                               name: firstNameController.text,
                               surname: lastNameController.text,
                               weight: double.parse(weightController.text),
                               height: double.parse(heightController.text),
-                              imagePath: pathToImage == '' ? 'assets/profile_picture.png' : pathToImage,
+                              imagePath: pathToImage,
                               periodLength: int.parse(periodLengthController.text),
                               cycleLength: int.parse(cycleLengthController.text),
                               aim: loseWeightPressed ? 'Lose weight' : maintainWeightPressed ? 'Maintain weight' : 'Gain weight',
                               workoutsPerWeek: _currentSliderValue.toInt(),
-                              birthDate: birthDateSave ?? DateTime.now(),
-                              lastPeriodDate: lastPeriodDateSave ?? DateTime.now());
+                              birthDate: isDateValid(birthDateController.text)!,
+                              lastPeriodDate: isDateValid(lastDayOfMenstruationController.text)!);
                           DatabaseManager.saveProfileData(profileData);
-                          //print(lastPeriodDateSave.toString());
-                          //print(profileData.lastPeriodDate.toString());
                           HealthData healthData = HealthData(
                               date: DateTime.now(),
                               weight: double.parse(weightController.text));
                           DatabaseManager.saveHealthData(healthData);
-                          PeriodDate periodDate = PeriodDate(date: DateTime.now());
+                          PeriodDate periodDate = PeriodDate(date: isDateValid(lastDayOfMenstruationController.text)!);
                           DatabaseManager.savePeriodDate(periodDate);
                           Navigator.pushReplacement(
                             context,

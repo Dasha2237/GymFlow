@@ -1,4 +1,5 @@
-import 'package:app_sport/dto/period_with_phases_data.dart';
+import 'period_with_phases_data.dart';
+import 'workout_data.dart';
 
 import 'health_data.dart';
 import 'period_date.dart';
@@ -13,6 +14,7 @@ class DatabaseManager {
   static late Box<ProfileData> profileDataBox;
   static late Box<HealthData> healthDataBox;
   static late Box<PeriodDate> periodDateBox;
+  static late Box<WorkoutData> workoutDataBox;
 
 
   DatabaseManager._privateConstructor();
@@ -32,9 +34,11 @@ class DatabaseManager {
     Hive.registerAdapter(ProfileDataAdapter());
     Hive.registerAdapter(HealthDataAdapter());
     Hive.registerAdapter(PeriodDateAdapter());
+    Hive.registerAdapter(WorkoutDataAdapter());
     profileDataBox = await Hive.openBox<ProfileData>('profile_data');
     healthDataBox = await Hive.openBox<HealthData>('health_data');
     periodDateBox = await Hive.openBox<PeriodDate>('period_date');
+    workoutDataBox = await Hive.openBox<WorkoutData>('workout_data');
   }
 
   static DatabaseManager get instance {
@@ -65,17 +69,19 @@ class DatabaseManager {
     return healthDataBox.values.toList();
   }
 
+  static void saveWorkoutData(WorkoutData workoutData) {
+    workoutDataBox.add(workoutData);
+  }
+
+  static List<WorkoutData> getWorkoutData() {
+    return workoutDataBox.values.toList();
+  }
+
   static void savePeriodDate(PeriodDate periodDate) {
     periodDateBox.add(periodDate);
     getNextPeriodDate(periodDate);
     getPreviousPeriodDate(periodDate);
-    printPeriodDates();
-    //printPeriodResults();
-    print("before sort");
     sortPeriodDates();
-    printPeriodDates();
-    //printPeriodResults();
-    print("aftersort");
   }
 
   static List<PeriodDate> getPeriodDate() {
@@ -186,6 +192,7 @@ class DatabaseManager {
   static List<PeriodDate> getPeriodDatesForMonth(DateTime date) {
     List<PeriodDate> periodDateList = periodDateBox.values.toList();
     List<PeriodDate> periodDates = [];
+    sortPeriodDates();
     if (isBefore(date, periodDateList.first.date)) {
       PeriodDate currentPeriodDate = periodDateList.first;
       while (isBefore(date, currentPeriodDate.date)) {
@@ -205,14 +212,19 @@ class DatabaseManager {
       sortPeriodDates();
     }
     periodDateList = periodDateBox.values.toList();
-    for (int i = 0; i < periodDateList.length; i++) {
-      if (isSameMonth(date, periodDateList[i].date)) {
-        periodDates.add(periodDateList[i-1]);
+    for (int i = 0; i  < periodDateList.length - 1; i++) {
+      if (isBetween(date, periodDateList[i].date, periodDateList[i + 1].date)) {
+        if (i == 0){
+          periodDates.add(getPreviousPeriodDate(periodDateList[i]));
+        }
+        else{
+          periodDates.add(periodDateList[i-1]);
+        }
         periodDates.add(periodDateList[i]);
         periodDates.add(periodDateList[i + 1]);
+        break;
       }
     }
-    printPeriodDates();
     return periodDates;
   }
   static List<PeriodWithPhasesData> getPeriodsWithPhasesForCalendar(DateTime date) {
@@ -227,7 +239,7 @@ class DatabaseManager {
     List<PeriodWithPhasesData> periodsWithPhases = getPeriodsWithPhasesForCalendar(date);
     for (int i = 0; i < periodsWithPhases.length; i++) {
       PeriodWithPhasesData periodWithPhases = periodsWithPhases[i];
-      if (isBetween(date, periodWithPhases.periodStartDate, periodWithPhases.periodEndDate)){
+      if (isBetween(date, periodWithPhases.periodStartDate, periodWithPhases.lutealPhaseEndDate)){
         if (isBetween(date, periodWithPhases.folicularPhaseStartDate, periodWithPhases.folicularPhaseEndDate)){
           return 'Folicular';
         }
@@ -249,12 +261,22 @@ class DatabaseManager {
     List<PeriodDate> periodDateList = periodDateBox.values.toList();
     for (int i = 0; i < periodDateList.length; i++) {
       if (isBetween(date, periodDateList[i].date, periodDateList[i + 1].date)) {
-        return periodDateList[i+1].date.difference(date).inDays == 0 ?
+        //return periodDateList[i+1].date.difference(date).inDays == 0 ?
+        //profileDataBox.values.first!.cycleLength :
+        //periodDateList[i+1].date.difference(date).inDays;
+        return getDifferenceInDays(periodDateList[i+1].date, date) == 0 ?
         profileDataBox.values.first!.cycleLength :
-        periodDateList[i+1].date.difference(date).inDays;
+        getDifferenceInDays(periodDateList[i+1].date, date);
       }
     }
     return periodDateList.first.date.difference(date).inDays;
+  }
+
+  //a method to get difference between two dates in days without minutes
+  static int getDifferenceInDays(DateTime date1, DateTime date2){
+    DateTime dateWithoutMinutes1 = DateTime(date1.year, date1.month, date1.day);
+    DateTime dateWithoutMinutes2 = DateTime(date2.year, date2.month, date2.day);
+    return dateWithoutMinutes1.difference(dateWithoutMinutes2).inDays;
   }
 
   // a method to get the number of day of the current cycle
@@ -266,7 +288,7 @@ class DatabaseManager {
           return 1;
         }
         else{
-          return periodDateList[i+1].date.difference(date).inDays * -1;
+          return getDifferenceInDays(date, periodDateList[i].date) + 1;
         }
       }
     }
@@ -287,5 +309,31 @@ class DatabaseManager {
     print('Days before next period: ${getDaysBeforeNextPeriod(date)}');
     print('Day of cycle: ${getDayOfCycle(date)}');
     print('Period phase: ${getPeriodPhase(date)}');
+  }
+
+  //a method to get the number of workouts in the current week
+  static int getWorkoutsInCurrentWeek(DateTime date) {
+    List<WorkoutData> workoutDataList = workoutDataBox.values.toList();
+    int workoutsInCurrentWeek = 0;
+    // get monday of the current week
+    DateTime monday = date.subtract(Duration(days: date.weekday - 1));
+    // get sunday of the current week
+    DateTime sunday = date.add(Duration(days: 7 - date.weekday));
+    for (int i = 0; i < workoutDataList.length; i++) {
+      if (isBetween(workoutDataList[i].date, monday, sunday)) {
+        workoutsInCurrentWeek++;
+      }
+    }
+    return workoutsInCurrentWeek;
+  }
+
+  static int getProgressInCurrentWeek(DateTime date){
+    int workoutsInCurrentWeek = getWorkoutsInCurrentWeek(date);
+    int workoutsPerWeek = profileDataBox.values.first!.workoutsPerWeek;
+    int progressInCurrentWeek = (workoutsInCurrentWeek / workoutsPerWeek * 100).round();
+    if (progressInCurrentWeek > 100){
+      return 100;
+    }
+    return progressInCurrentWeek;
   }
 }

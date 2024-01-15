@@ -51,23 +51,21 @@ class _HomePageState extends State<HomePage> {
   final String ovulationTitle = 'It is Ovulation now!';
   final String lutealTitle = 'It is Luteal Phase now!';
 
-  final colorMainFollicular = Color(0xFFF62457);
-  final colorSubFollicular = Color(0xFFFFB199);
+  final colorMainMenstruation = Color(0xFFF62457);
+  final colorSubMenstruation = Color(0xFFFFB199);
 
-  final colorMainMenstruation = Color.fromARGB(255, 60, 138, 255);
-  final colorSubMenstruation = Color.fromARGB(255, 134, 204, 229);
+  final colorMainOvulation = Color.fromARGB(255, 60, 138, 255);
+  final colorSubOvulation = Color.fromARGB(255, 134, 204, 229);
 
   final colorMainLuteal = Color.fromARGB(255, 201, 24, 255);
   final colorSubLuteal = Color.fromARGB(255, 245, 147, 224);
 
-  final colorMainOvulation = Color.fromARGB(255, 255, 165, 21);
-  final colorSubOvulation = Color.fromARGB(255, 255, 206, 30);
+  final colorMainFollicular = Color.fromARGB(255, 255, 165, 21);
+  final colorSubFollicular = Color.fromARGB(255, 255, 206, 30);
 
 
   @override
   Widget build(BuildContext context) {
-    //DatabaseManager.printPeriodDates();
-    //DatabaseManager.printPeriodResults();
     healthData = DatabaseManager.getHealthDataByDate(DateTime.now());
     String phase = DatabaseManager.getPeriodPhase(DateTime.now());
     String title = '';
@@ -241,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             Container(
-                              width: 105,
+                              width: DatabaseManager.getProgressInCurrentWeek(DateTime.now())*270/100,
                               height: 7,
                               decoration: BoxDecoration(
                                 color: const Color(0xFFF62457),
@@ -253,65 +251,6 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     SizedBox(height: 14),
-                    Row(
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              'Check out your workout plan',
-                              style: GoogleFonts.getFont(
-                                'Inter',
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 47,
-                        ),
-                        Column(
-                          children: [
-                            SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: TextButton(
-                                style: TextButton.styleFrom(
-                                    padding: EdgeInsets.all(0)),
-                                onPressed: () {},
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      width: 24,
-                                      height: 24,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFFF62457),
-                                            Color(0xFFFFB199)
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      child: Image.asset(
-                                        'lib/assets/arrow.png',
-                                        width: 6,
-                                        height: 10,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
                   ],
                 ),
               )
@@ -324,6 +263,50 @@ class _HomePageState extends State<HomePage> {
             Container(
                 width: 328,
                 child: TableCalendar(
+                  calendarBuilders: CalendarBuilders(
+                    markerBuilder: (context, date, events) {
+                      if (events.contains('Folicular')) {
+                        return
+                          Positioned(
+                            right: 1,
+                            bottom: 1,
+                            child: _buildEventMarker(colorMainFollicular),
+                          );
+
+                      }
+
+                      if (events.contains('Menstruation')) {
+                        return
+                          Positioned(
+                            right: 1,
+                            bottom: 1,
+                            child: _buildEventMarker(colorMainMenstruation),
+
+                        );
+                      }
+
+                      if (events.contains('Ovulation')) {
+                        return
+                          Positioned(
+                            right: 1,
+                            bottom: 1,
+                            child: _buildEventMarker(colorMainOvulation),
+
+                        );
+                      }
+
+                      if (events.contains('Luteal')) {
+                        return
+                          Positioned(
+                            right: 1,
+                            bottom: 1,
+                            child: _buildEventMarker(colorMainLuteal),
+                        );
+                      }
+
+                      return null;
+                    },
+                  ),
                   headerStyle: HeaderStyle(
                       formatButtonVisible: false, titleCentered: true),
                   availableGestures: AvailableGestures.all,
@@ -332,6 +315,19 @@ class _HomePageState extends State<HomePage> {
                   lastDay: DateTime.utc(2030, 3, 14),
                   focusedDay: today,
                   onDaySelected: _onDaySelected,
+                  eventLoader: (day) {String phase = DatabaseManager.getPeriodPhase(day);
+                  if (phase == 'Folicular') {
+                    return ['Folicular']; // Use a unique identifier for each phase
+                  } else if (phase == 'Period') {
+                    return ['Menstruation']; // Use a unique identifier for each phase
+                  } else if (phase == 'Ovulation') {
+                    return ['Ovulation']; // Use a unique identifier for each phase
+                  } else if (phase == 'Luteal') {
+                    return ['Luteal']; // Use a unique identifier for each phase
+                  } else {
+                    return [];
+                  }
+                  },
                 ))
           ]),
           SizedBox(
@@ -617,4 +613,14 @@ class _HomePageState extends State<HomePage> {
       ),
     ));
   }
+}
+Widget _buildEventMarker(Color color) {
+  return Container(
+    width: 10,
+    height: 10,
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(5),
+    ),
+  );
 }
