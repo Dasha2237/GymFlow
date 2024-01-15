@@ -1,26 +1,76 @@
+import 'package:app_sport/dto/workout_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'dto/database_manager.dart';
+
 class Workout extends StatelessWidget {
   int numberOfWorkout = 1;
-  List<String> excercises = [
-    '5 приседаний',
-    '20 отжиманий',
-    'Соснуть хуйца',
-    'И заебца',
-    'Растяжка'
+
+  List<String> namesForWorkout = ['Cardio & Stretching', 'Weight training','Weight training', 'Cardio'];
+  List<int> durationsForFirstWorkout = [60, 60, 60, 90];
+  List<int> durationsForSecondWorkout = [45, 60, 60, 60];
+  List<int> durationsForThirdWorkout = [60, 60, 80, 40];
+  List<List<String>> excercisesForFirstWorkout = [
+    ['Yoga x 30 min', 'Stretching x 30 min'],
+    ["Squats with a barbell 3x12 (60-65%*)", "Bench press 5x6 (75-80%)",
+      "Lying dumbbell flyes 3x12", "Barbell curl 4x8",
+      "Press crunches 2x50",],
+    [
+      "Deadlift 3x12 (60-65%)",
+      "Bench press 4x8 (70-75%)",
+      "French bench press 3x12",
+      "Standing biceps curl 5x6",
+      "Press crunches 2x50",
+    ],
+    ["Aerobic exercise x 90 min"]
   ];
+  List<List<String>> excercisesForSecondWorkout = [
+    ['Easy biking x 30 min', 'Stretching x 30 min'],
+    [
+      "Deadlift 5x6 (75-80%)",
+      "Bench press 3x12 (60-65%)",
+      "Dips (with weights) 4x8",
+      "Standing dumbbell biceps curl 3x12",
+      "Raising legs bent at the knees to press 4x15",
+    ],
+    [
+      "Squats with barbell 4x8 (70-75%)",
+      "Bench press 5x6 (75-80%)",
+      "Standing barbell press 4x8",
+      "Press to the bottom in a 3x12",
+      "Block machine Raising the EZ-bar for biceps in a Scott bench 4x8",
+      "Straight leg raise for press 4x12",
+    ],
+    ["Bike ride x 60 min"]
+  ];
+  List<List<String>> excercisesForThirdWorkout = [
+    ['Pilates x 30 min', 'Stretching x 30 min'],
+    [
+      "Squats with barbell 4x8 (70-75%)",
+      "Bench press 4x4 (80-85%)",
+      "Pull-up on the bar 4x8 (with weights)",
+      "Arnold Press 4x8",
+      "Press crunches 2x50",
+    ],
+    [
+      "Deadlift 5x6 (75-80%)",
+      "Bench press 3x12 (60-65%)",
+      "Vertical block row (lat) 3x12",
+      "Dumbbell flyes lying on a bench 4x8",
+      "Standing biceps curl 3x12",
+      "Press crunches 2x50",
+    ],
+    ["Circuit-style training x 40 min"]
+  ];
+  String phase = DatabaseManager.getPeriodPhase(DateTime.now());
 
-  String get excercisesText {
-    return excercises.map((exercise) => '\u2022 $exercise').toList().join('\n');
-  }
-
-  void _showPopup(BuildContext context) {
+  void _showPopup(BuildContext context, WorkoutDescription workoutDescription) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Workout #'+ numberOfWorkout.toString()),
+          title: Text(workoutDescription.name),
           content: Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +79,7 @@ class Workout extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                Text(excercisesText)
+                Text(workoutDescription.exercises.map((exercise) => '\u2022 $exercise').toList().join('\n'))
               ],
             ),
           ),
@@ -38,7 +88,11 @@ class Workout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
         TextButton(
-        onPressed: () {},
+        onPressed: () {
+          WorkoutData data = WorkoutData(date: DateTime.now());
+          DatabaseManager.saveWorkoutData(data);
+          Navigator.of(context).pop();
+        },
         child: Text('Сompleted'),
         ),
         TextButton(
@@ -57,6 +111,22 @@ class Workout extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    int indexOfWorkout = phase == 'Period' ? 0 : phase == 'Folicular' ? 1 : phase == 'Ovulation' ? 2 : 3;
+    WorkoutDescription firstWorkout = WorkoutDescription(
+        name: namesForWorkout[indexOfWorkout],
+        description: 'Fullbody',
+        duration: durationsForFirstWorkout[indexOfWorkout],
+        exercises: excercisesForFirstWorkout[indexOfWorkout]);
+    WorkoutDescription secondWorkout = WorkoutDescription(
+        name: namesForWorkout[indexOfWorkout],
+        description: 'Fullbody',
+        duration: durationsForSecondWorkout[indexOfWorkout],
+        exercises: excercisesForSecondWorkout[indexOfWorkout]);
+    WorkoutDescription thirdWorkout = WorkoutDescription(
+        name: namesForWorkout[indexOfWorkout],
+        description: 'Fullbody',
+        duration: durationsForThirdWorkout[indexOfWorkout],
+        exercises: excercisesForThirdWorkout[indexOfWorkout]);
 
     return SingleChildScrollView(
       child: Column(
@@ -68,7 +138,7 @@ class Workout extends StatelessWidget {
             children: [
               TextButton(
                   onPressed: () {
-                    _showPopup(context);
+                    _showPopup(context, firstWorkout);
                   },
                   child: Stack(
                     children: [
@@ -111,16 +181,9 @@ class Workout extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Container(
-                                      height: 30,
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white),
-                                    ),
                                     SizedBox(height: 12),
                                     Text(
-                                      'Weight training',
+                                      firstWorkout.name,
                                       style: GoogleFonts.getFont(
                                         'Merriweather Sans',
                                         color: const Color.fromARGB(
@@ -130,7 +193,7 @@ class Workout extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '45 min',
+                                      firstWorkout.duration.toString() + ' min',
                                       style: GoogleFonts.getFont(
                                         'Inter',
                                         color: const Color.fromARGB(
@@ -159,7 +222,7 @@ class Workout extends StatelessWidget {
                                           right: 11,
                                           left: 11),
                                       child: Text(
-                                        'Upperbody',
+                                        firstWorkout.description,
                                         style: GoogleFonts.getFont(
                                           'Inter',
                                           color: Color.fromARGB(
@@ -184,7 +247,7 @@ class Workout extends StatelessWidget {
             children: [
               TextButton(
                   onPressed: () {
-                    _showPopup(context);
+                    _showPopup(context, secondWorkout);
                   },
                   child: Stack(
                     children: [
@@ -227,16 +290,9 @@ class Workout extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Container(
-                                      height: 30,
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white),
-                                    ),
                                     SizedBox(height: 12),
                                     Text(
-                                      'Weight training',
+                                      secondWorkout.name,
                                       style: GoogleFonts.getFont(
                                         'Merriweather Sans',
                                         color: const Color.fromARGB(
@@ -246,7 +302,7 @@ class Workout extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '45 min',
+                                      secondWorkout.duration.toString() + ' min',
                                       style: GoogleFonts.getFont(
                                         'Inter',
                                         color: const Color.fromARGB(
@@ -275,7 +331,7 @@ class Workout extends StatelessWidget {
                                           right: 11,
                                           left: 11),
                                       child: Text(
-                                        'Fullbody',
+                                        secondWorkout.description,
                                         style: GoogleFonts.getFont(
                                           'Inter',
                                           color: Color.fromARGB(
@@ -300,7 +356,7 @@ class Workout extends StatelessWidget {
             children: [
               TextButton(
                   onPressed: () {
-                    _showPopup(context);
+                    _showPopup(context, thirdWorkout);
                   },
                   child: Stack(
                     children: [
@@ -343,23 +399,9 @@ class Workout extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Container(
-                                      height: 30,
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white),
-                                      child: Container(
-                                        height: 25,
-                                        width: 25,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.white),
-                                      ),
-                                    ),
                                     SizedBox(height: 12),
                                     Text(
-                                      'Cardio',
+                                      thirdWorkout.name,
                                       style: GoogleFonts.getFont(
                                         'Merriweather Sans',
                                         color: const Color.fromARGB(
@@ -369,7 +411,7 @@ class Workout extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '55 min',
+                                      thirdWorkout.duration.toString() + ' min',
                                       style: GoogleFonts.getFont(
                                         'Inter',
                                         color: const Color.fromARGB(
@@ -398,7 +440,7 @@ class Workout extends StatelessWidget {
                                           right: 11,
                                           left: 11),
                                       child: Text(
-                                        'Fullbody',
+                                        thirdWorkout.description,
                                         style: GoogleFonts.getFont(
                                           'Inter',
                                           color: Color.fromARGB(
@@ -422,4 +464,12 @@ class Workout extends StatelessWidget {
       ),
     );
   }
+}
+// a class to store name of workout what its for and how long it takes and exercises inside it
+class WorkoutDescription{
+  String name;
+  String description;
+  int duration;
+  List<String> exercises;
+  WorkoutDescription({required this.name, required this.description, required this.duration, required this.exercises});
 }

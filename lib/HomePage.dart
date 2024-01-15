@@ -241,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             Container(
-                              width: 105,
+                              width: DatabaseManager.getProgressInCurrentWeek(DateTime.now())*270/100,
                               height: 7,
                               decoration: BoxDecoration(
                                 color: const Color(0xFFF62457),
@@ -253,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     SizedBox(height: 14),
-                    Row(
+                    /*Row(
                       children: [
                         Column(
                           children: [
@@ -311,7 +311,7 @@ class _HomePageState extends State<HomePage> {
                           ],
                         )
                       ],
-                    ),
+                    ),*/
                   ],
                 ),
               )
